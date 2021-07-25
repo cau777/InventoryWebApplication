@@ -1,13 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using InventoryWebApplication.Models.DatabaseContexts;
+using InventoryWebApplication.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 
 namespace InventoryWebApplication
 {
@@ -23,6 +31,28 @@ namespace InventoryWebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+            services.AddControllers();
+
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                o.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie(o =>
+            {
+                o.Cookie.Name = "CookieAuth";
+                o.LoginPath = "/login";
+                o.ExpireTimeSpan = TimeSpan.FromHours(24);
+            });
+
+            services.AddDbContext<DatabaseContext>(o =>
+                o.UseSqlite(Configuration["SQLiteConnection:SQLiteConnectionString"]));
+
+            services.AddTransient<UsersService>();
+
+            services.AddMvc();
+            services.AddRazorPages();
             services.AddControllersWithViews();
         }
 
@@ -45,13 +75,19 @@ namespace InventoryWebApplication
 
             app.UseRouting();
 
+            app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                // endpoints.MapControllerRoute("auth", "{controller=Authentication}");
+
+                // endpoints.MapControllerRoute(
+                //     "login",
+                //     "auth/{controller=Login}/{action=Login}/{id?}");
             });
         }
     }

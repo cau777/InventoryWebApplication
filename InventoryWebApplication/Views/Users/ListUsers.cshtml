@@ -1,0 +1,27 @@
+﻿@using InventoryWebApplication.Services
+@inject UsersService _usersService
+
+@{
+    Layout = "_Layout";
+}
+
+<h3>Users</h3>
+<div class="btn-toolbar">
+    <button asp-controller="Users" asp-action=""></button>
+</div>
+<table class="table table-bordered">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Role</th>
+    </tr>
+    @foreach (User user in _usersService.GetUsers())
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Name</td>
+            <td>@user.Role</td>
+        </tr>
+    }
+</table>
+

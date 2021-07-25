@@ -1,0 +1,35 @@
+﻿@model InventoryWebApplication.Views.Authentication.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "_Layout";
+}
+
+<h2>Login</h2>
+@if (Model.FailedAuthentication)
+{
+    <div role="alert" class="alert-warning" id="login-failed-alert"> Wrong username or password</div>
+}
+
+<form class="login-form" accept-charset="UTF-8" asp-controller="Authentication" asp-action="Authenticate" method="post">
+    <div class="form-body">
+        <label class="form-label" for="usernameInput">Username: </label>
+        <input name="username" type="text" id="usernameInput">
+        <br>
+        
+        <label class="form-label" for="passwordInput">Password: </label>
+        <input name="password" type="password" id="passwordInput">
+        <br>
+    </div>
+    <input type="submit" id="submitButton">
+</form>
+
+@if (Model.FailedAuthentication)
+{
+    <script>
+        const intervalFadeError = setInterval(function() {
+          $("#login-failed-alert").fadeOut(300, "swing", function() {});
+          clearInterval(intervalFadeError);
+        }, 5000);
+    </script>
+}

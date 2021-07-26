@@ -65,12 +65,29 @@ body {
     margin-bottom: 60px;
 }
 
-.login-form .form-label {
+.simple-form .form-label {
     min-width: 120px;
 }
 
-.login-form input {
+.simple-form input {
     align-self: end;
+}
+
+.simple-form select {
+    padding: 1px 2px;
+}
+
+.form-action {
+    cursor: pointer;
+    padding-bottom: 0;
+    padding-top: 0;
+    user-select: none;
+    height: 30px;
+    width: 30px;
+}
+
+.form-action span {
+    padding-bottom: 8px;
 }
 
 .form-body {
@@ -80,4 +97,28 @@ body {
 
 div.alert-warning {
     padding: 10px;
+}
+
+.nav-user {
+    float: right;
+    display: inline-flex;
+    flex-direction: row;
+}
+
+.nav-user .nav-link {
+    padding-left: 0;
+}
+
+.card-group a {
+    text-decoration: none;
+    color: black;
+}
+
+.card-actions .card-img {
+    width: 150px !important;
+}
+
+.btn-toolbar {
+    margin-top: 5px;
+    margin-bottom: 10px;
 }

@@ -2,12 +2,15 @@
 @inject UsersService _usersService
 
 @{
+    ViewBag.Title = "User Management";
     Layout = "_Layout";
 }
 
 <h3>Users</h3>
 <div class="btn-toolbar">
-    <button asp-controller="Users" asp-action=""></button>
+    <a asp-controller="Users" asp-action="AddUserForm">
+        <span>Add</span>
+    </a>
 </div>
 <table class="table table-bordered">
     <tr>

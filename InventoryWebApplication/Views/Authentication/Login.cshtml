@@ -1,4 +1,4 @@
-﻿@model InventoryWebApplication.Views.Authentication.LoginModel
+﻿@model OperationResult
 
 @{
     ViewBag.Title = "Login";
@@ -6,14 +6,14 @@
 }
 
 <h2>Login</h2>
-@if (Model.FailedAuthentication)
+@if (!Model.IsEmpty)
 {
-    <div role="alert" class="alert-warning" id="login-failed-alert"> Wrong username or password</div>
+    <div role="alert" class="alert-@Model.Severity" id="failed-alert">@Model.Message</div>
 }
 
-<form class="login-form" accept-charset="UTF-8" asp-controller="Authentication" asp-action="Authenticate" method="post">
+<form class="simple-form" accept-charset="UTF-8" asp-controller="Authentication" asp-action="Authenticate" method="post">
     <div class="form-body">
-        <label class="form-label" for="usernameInput">Username: </label>
+        <label class="form-label" for="usernameInput">Name: </label>
         <input name="username" type="text" id="usernameInput">
         <br>
         
@@ -24,12 +24,12 @@
     <input type="submit" id="submitButton">
 </form>
 
-@if (Model.FailedAuthentication)
+@section Scripts
 {
-    <script>
-        const intervalFadeError = setInterval(function() {
-          $("#login-failed-alert").fadeOut(300, "swing", function() {});
-          clearInterval(intervalFadeError);
-        }, 5000);
-    </script>
+    @if (!Model.IsEmpty)
+    {
+        <script>
+            fadeAlert();
+        </script>
+    }
 }

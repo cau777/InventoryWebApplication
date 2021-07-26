@@ -1,10 +1,23 @@
-﻿@inject InventoryWebApplication.Services.UsersService _usersService
+﻿@using System.Security.Claims
+@using InventoryWebApplication.Utils.Formatting
+@inject InventoryWebApplication.Services.UsersService _usersService
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with FailedAuthenticationSP.NET Core</a>.</p>
-    <h2>@_usersService.UserCount</h2>
+    <h1 class="display-4">Welcome @User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value.Capitalize()</h1>
+    <div class="card-group card-actions">
+        @if (User.IsInRole("manager"))
+        {
+            <a asp-controller="Users" asp-action="Index">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">Manage Users</h5>
+                        <img class="card-img" src="img/usericon.png" alt="user icon">
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
 </div>

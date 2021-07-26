@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Services;
-using InventoryWebApplication.Views.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -65,18 +64,17 @@ namespace InventoryWebApplication.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        private RedirectToActionResult RedirectToFailedLogin()
+        private IActionResult RedirectToFailedLogin()
         {
-            return RedirectToAction("Login", "Authentication", new {failed = true});
+            return View("Login", new OperationResult("Wrong username or password"));
         }
 
         [HttpGet]
         [AllowAnonymous]
         [Route("login")]
-        public IActionResult Login([FromQuery] bool failed = false)
+        public IActionResult Login()
         {
-            LoginModel loginModel = new() {FailedAuthentication = failed};
-            return View(loginModel);
+            return View(OperationResult.Empty);
         }
     }
 }

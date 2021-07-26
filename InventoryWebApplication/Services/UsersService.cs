@@ -11,6 +11,7 @@ namespace InventoryWebApplication.Services
 {
     public class UsersService
     {
+        public static string[] AvailableRoles => new[] {"manager"};
         public int UserCount => _databaseContext.Users.Count();
         public int ProductsCount => _databaseContext.Products.Count();
 

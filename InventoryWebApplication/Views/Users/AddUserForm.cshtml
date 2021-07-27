@@ -1,17 +1,13 @@
 ﻿@using InventoryWebApplication.Services
 @using InventoryWebApplication.Utils.Formatting
-@model OperationResult
+@model InventoryWebApplication.Models.Operations.MessageOperation
 
 @{
     ViewBag.Title = "Adding User";
-    Layout = "_Layout";
+    ViewBag.PreviousPage = "users";
+    Layout = "_FormsLayout";
 }
 
-<h3>Add User</h3>
-@if (!Model.IsEmpty)
-{
-    <div role="alert" class="alert-warning" id="failed-alert">@Model.Message</div>
-}
 <form class="simple-form" method="post" asp-controller="Users" asp-action="AddUser">
     <div class="form-body">
         <label class="form-label" for="usernameInput">Name: </label>
@@ -32,7 +28,7 @@
             }
         </select>
     </div>
-    <input type="submit">
+    <button type="submit">Add</button>
 </form>
 
 @section Scripts
@@ -50,11 +46,4 @@
          document.getElementById('passwordInput').value = password;
        })
     </script>
-    
-    @if (!Model.IsEmpty)
-    {
-        <script>
-            fadeAlert();
-        </script>
-    }
 }

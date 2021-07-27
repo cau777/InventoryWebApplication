@@ -99,6 +99,18 @@ div.alert-warning {
     padding: 10px;
 }
 
+div.alert-info {
+    padding: 10px;
+}
+
+div.alert-danger {
+    padding: 10px;
+}
+
+div.alert-success {
+    padding: 10px;
+}
+
 .nav-user {
     float: right;
     display: inline-flex;
@@ -121,4 +133,9 @@ div.alert-warning {
 .btn-toolbar {
     margin-top: 5px;
     margin-bottom: 10px;
+}
+
+table tr td a {
+    text-decoration: none;
+    color: black;
 }

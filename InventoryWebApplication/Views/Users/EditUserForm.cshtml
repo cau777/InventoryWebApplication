@@ -1,0 +1,65 @@
+@using InventoryWebApplication.Services
+@using InventoryWebApplication.Utils.Formatting
+@model InventoryWebApplication.Models.Operations.MessageIdOperation
+@inject UsersService _usersService
+
+@{
+    ViewBag.Title = "Edit user";
+    ViewBag.PreviousPage = "users";
+    Layout = "_FormsLayout";
+}
+
+@{
+    User user = _usersService.FindUser(Model.UserId);
+}
+
+@if (user is null)
+{
+    <h1>This user does not exist</h1>
+}
+else
+{
+    <form class="simple-form" accept-charset="UTF-8" method="post" action="/users/edit/@Model.UserId">
+        <div class="form-body">
+            <label class="form-label" for="idInput">Id: </label>
+            <input value="@user.Id" readonly disabled type="text" id="idInput">
+            <br>
+
+            <label class="form-label" for="usernameInput">Name: </label>
+            <input value="@user.Name" name="username" type="text" id="usernameInput">
+            <br>
+
+            <label class="form-label" for="passwordInput">Password: </label>
+            <input name="password" type="text" id="passwordInput" placeholder="empty to keep password">
+            <br>
+
+            <label class="form-label" for="roleInput">Role: </label>
+            <select name="role" id="roleInput">
+                @foreach (string possibleRole in UsersService.AvailableRoles)
+                {
+                    <option value="@possibleRole">@possibleRole.Capitalize()</option>
+                }
+            </select>
+        </div>
+
+        <div>
+            <button type="submit">Save</button>
+            <a href="/users/">
+                <button type="button">Discard</button>
+            </a>
+            <button id="btnDelete" type="button">Delete user</button>
+        </div>
+    </form>
+
+@section Scripts
+{
+    <script>
+        $('#btnDelete').click(function() {
+            let request = new XMLHttpRequest();
+            request.open("DELETE", "/users/delete/@Model.UserId", false)
+            request.send();
+            window.location.assign("/users");
+        });
+    </script>
+}
+}

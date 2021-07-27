@@ -1,16 +1,19 @@
 ﻿@using System.Security.Claims
+@using InventoryWebApplication.Utils
 @using InventoryWebApplication.Utils.Formatting
 @inject InventoryWebApplication.Services.UsersService _usersService
 @{
-    ViewData["Title"] = "Home";
+    ViewBag.Title = "Home";
+    ViewBag.PreviousPage = "";
+    Layout = "_Layout";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome @User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value.Capitalize()</h1>
+    <h1 class="display-4">Welcome @User.Claims.GetRole().Capitalize()</h1>
     <div class="card-group card-actions">
         @if (User.IsInRole("manager"))
         {
-            <a asp-controller="Users" asp-action="Index">
+            <a asp-controller="Users" asp-action="UserList">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title text-dark">Manage Users</h5>

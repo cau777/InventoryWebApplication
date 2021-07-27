@@ -1,0 +1,58 @@
+﻿@using InventoryWebApplication.Services
+@using InventoryWebApplication.Utils
+@inject UsersService _usersService
+
+@{
+    ViewBag.Title = "User Management";
+    ViewBag.PreviousPage = "";
+    Layout = "_Layout";
+}
+
+<h3>Users</h3>
+<div class="btn-toolbar">
+    <a asp-controller="Users" asp-action="AddUserForm">
+        <button>
+            <span>Add</span>
+        </button>
+    </a>
+</div>
+<table class="table table-bordered">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Role</th>
+    </tr>
+    @foreach (User user in _usersService.GetUsers().Where(o => o.Name != User.Claims.GetName()))
+    {
+        <tr>
+            <td>
+                <a href="/users/edit/@user.Id">
+                    <div>
+                        @user.Id
+                    </div>
+                </a>
+            </td>
+            <td>
+                <a href="/users/edit/@user.Id">
+                    <div>
+                        @user.Name
+                    </div>
+                </a>
+            </td>
+            <td>
+                <a href="/users/edit/@user.Id">
+                    <div>
+                        @user.Role
+                    </div>
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+
+@section Scripts
+{
+    <script>
+        
+    </script>
+}

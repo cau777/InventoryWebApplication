@@ -1,8 +1,8 @@
 // ReSharper disable InconsistentNaming
-namespace InventoryWebApplication.Models
+namespace InventoryWebApplication.Models.Operations
 {
     
-    public enum OperationResultSeverity
+    public enum MessageSeverity
     {
         success, info, warning, danger
     }

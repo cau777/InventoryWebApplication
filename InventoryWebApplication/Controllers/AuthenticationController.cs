@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Operations;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -45,7 +46,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return RedirectToFailedLogin();
 
-            User user = _usersService.FindUser(username, password);
+            User user = _usersService.FindUserWithPassword(username, password);
             if (user is null) return RedirectToFailedLogin();
 
             ClaimsIdentity claimsIdentity = new(new Claim[]
@@ -66,7 +67,7 @@ namespace InventoryWebApplication.Controllers
 
         private IActionResult RedirectToFailedLogin()
         {
-            return View("Login", new OperationResult("Wrong username or password"));
+            return View("Login", new MessageOperation("Wrong username or password"));
         }
 
         [HttpGet]
@@ -74,7 +75,7 @@ namespace InventoryWebApplication.Controllers
         [Route("login")]
         public IActionResult Login()
         {
-            return View(OperationResult.Empty);
+            return View(MessageOperation.Empty);
         }
     }
 }

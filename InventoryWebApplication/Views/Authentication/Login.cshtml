@@ -1,14 +1,9 @@
-﻿@model OperationResult
+﻿@model InventoryWebApplication.Models.Operations.MessageOperation
 
 @{
     ViewBag.Title = "Login";
-    Layout = "_Layout";
-}
-
-<h2>Login</h2>
-@if (!Model.IsEmpty)
-{
-    <div role="alert" class="alert-@Model.Severity" id="failed-alert">@Model.Message</div>
+    ViewBag.PreviousPage = "";
+    Layout = "_FormsLayout";
 }
 
 <form class="simple-form" accept-charset="UTF-8" asp-controller="Authentication" asp-action="Authenticate" method="post">
@@ -23,13 +18,3 @@
     </div>
     <input type="submit" id="submitButton">
 </form>
-
-@section Scripts
-{
-    @if (!Model.IsEmpty)
-    {
-        <script>
-            fadeAlert();
-        </script>
-    }
-}

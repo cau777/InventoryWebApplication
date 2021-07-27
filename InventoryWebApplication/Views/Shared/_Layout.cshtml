@@ -1,4 +1,7 @@
 ﻿@using System.Security.Claims
+@using InventoryWebApplication.Utils
+@using Microsoft.AspNetCore.Http
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,12 +11,38 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
     <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.1/dist/css/uikit.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.7.1/dist/css/uikit.min.css"/>
 </head>
 <body>
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
         <div class="container">
+
+            @* @{ *@
+            @*     string completeUrl = Context.Request.Path.ToString().TrimEnd('/'); *@
+            @*     System.Diagnostics.Debug.WriteLine(completeUrl); *@
+            @*     int lastSlash = completeUrl.LastIndexOf('/'); *@
+            @* } *@
+            @* *@
+            @* @if (lastSlash != -1) *@
+            @* { *@
+            @*     string previousUrl = completeUrl[..lastSlash]; *@
+            @*     <a href="@(previousUrl + "/")"> *@
+            @*         <button class="btn"> *@
+            @*             <span uk-icon="arrow-left"></span> *@
+            @*         </button> *@
+            @*     </a> *@
+            @* } *@
+
+            @if (Context.Request.Path.ToString().Trim('/') != "")
+            {
+                <a href="@("/" + ViewBag.PreviousPage + "/")">
+                    <button class="btn">
+                        <span uk-icon="arrow-left"></span>
+                    </button>
+                </a>
+            }
+
             <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">InventoryWebApplication</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -29,7 +58,7 @@
             <li class="nav-user">
                 @if (User.Claims.Count() != 0)
                 {
-                    <span class="text-dark nav-link">Hello, @User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.Name)?.Value</span>
+                    <span class="text-dark nav-link">Hello, @User.Claims.GetName()</span>
                 }
 
                 <img src="~/img/usericon.png" alt="user icon" width="40px" height="40px"/>

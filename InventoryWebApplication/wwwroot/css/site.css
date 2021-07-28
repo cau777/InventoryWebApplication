@@ -121,7 +121,7 @@ div.alert-success {
     padding-left: 0;
 }
 
-.card-group a {
+.normal-text-link {
     text-decoration: none;
     color: black;
 }

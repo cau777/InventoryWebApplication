@@ -13,7 +13,6 @@ namespace InventoryWebApplication.Services
 {
     public class UsersService
     {
-        public static string[] AvailableRoles => new[] {"manager"};
         public int UserCount => _databaseContext.Users.Count();
         public int ProductsCount => _databaseContext.Products.Count();
 
@@ -113,13 +112,14 @@ namespace InventoryWebApplication.Services
             }
         }
         
-        public bool DeleteUser(int id)
+        public async Task<bool> DeleteUser(int id)
         {
             User user = GetUser(id);
 
             if (user is null) return false;
 
             _databaseContext.Users.Remove(user);
+            await _databaseContext.SaveChangesAsync();
             return true;
         }
 

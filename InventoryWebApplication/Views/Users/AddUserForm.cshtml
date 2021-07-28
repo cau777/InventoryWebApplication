@@ -22,9 +22,9 @@
 
         <label class="form-label" for="roleInput">Role: </label>
         <select name="role" id="roleInput">
-            @foreach (string possibleRole in UsersService.AvailableRoles)
+            @foreach (string possibleRole in Role.AvailableRoles)
             {
-                <option value="@possibleRole">@possibleRole.Capitalize()</option>
+                <option value="@possibleRole">@Role.GetFormattedName(possibleRole)</option>
             }
         </select>
     </div>

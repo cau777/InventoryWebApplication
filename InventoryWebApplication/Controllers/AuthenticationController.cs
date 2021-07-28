@@ -77,5 +77,14 @@ namespace InventoryWebApplication.Controllers
         {
             return View(MessageOperation.Empty);
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Login", "Authentication");
+        }
     }
 }

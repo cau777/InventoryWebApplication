@@ -3,7 +3,7 @@
 @inject UsersService _usersService
 
 @{
-    ViewBag.Title = "User Management";
+    ViewBag.Title = "Users Management";
     ViewBag.PreviousPage = "";
     Layout = "_Layout";
 }
@@ -26,23 +26,23 @@
     {
         <tr>
             <td>
-                <a href="/users/edit/@user.Id">
+                <a class="normal-text-link" href="/users/edit/@user.Id">
                     <div>
                         @user.Id
                     </div>
                 </a>
             </td>
             <td>
-                <a href="/users/edit/@user.Id">
+                <a class="normal-text-link" href="/users/edit/@user.Id">
                     <div>
                         @user.Name
                     </div>
                 </a>
             </td>
             <td>
-                <a href="/users/edit/@user.Id">
+                <a class="normal-text-link" href="/users/edit/@user.Id">
                     <div>
-                        @user.Role
+                        @Role.GetFormattedName(user.Role)
                     </div>
                 </a>
             </td>

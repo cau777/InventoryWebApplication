@@ -36,7 +36,7 @@
 
             @if (Context.Request.Path.ToString().Trim('/') != "")
             {
-                <a href="@("/" + ViewBag.PreviousPage + "/")">
+                <a href="@("/" + ViewBag.PreviousPage)">
                     <button class="btn">
                         <span uk-icon="arrow-left"></span>
                     </button>
@@ -61,7 +61,7 @@
                     <span class="text-dark nav-link">Hello, @User.Claims.GetName()</span>
                 }
 
-                <img src="~/img/usericon.png" alt="user icon" width="40px" height="40px"/>
+                <span class="" uk-icon="icon: user; ratio: 2"></span>
             </li>
         </div>
     </nav>

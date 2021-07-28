@@ -8,7 +8,7 @@ namespace InventoryWebApplication.Utils.Formatting
     {
         public static string ToTitle(this string o)
         {
-            StringBuilder builder = new StringBuilder(o);
+            StringBuilder builder = new(o);
             builder[0] = char.ToUpper(builder[0]);
 
             for (int i = 1; i < builder.Length; i++)

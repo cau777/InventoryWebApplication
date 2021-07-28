@@ -50,6 +50,7 @@ namespace InventoryWebApplication
                 o.UseSqlite(Configuration["SQLiteConnection:SQLiteConnectionString"]));
 
             services.AddTransient<UsersService>();
+            services.AddTransient<ProductsService>();
 
             services.AddMvc();
             services.AddRazorPages();

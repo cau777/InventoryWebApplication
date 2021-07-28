@@ -10,7 +10,7 @@
 }
 
 @{
-    User user = _usersService.FindUser(Model.UserId);
+    User user = await _usersService.FindUser(Model.UserId);
 }
 
 @if (user is null)

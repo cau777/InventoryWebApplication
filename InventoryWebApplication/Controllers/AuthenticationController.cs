@@ -46,7 +46,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return RedirectToFailedLogin();
 
-            User user = _usersService.FindUserWithPassword(username, password);
+            User user = await _usersService.FindUserWithPassword(username, password);
             if (user is null) return RedirectToFailedLogin();
 
             ClaimsIdentity claimsIdentity = new(new Claim[]

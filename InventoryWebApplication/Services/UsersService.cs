@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Models.DatabaseContexts;
 using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryWebApplication.Services
 {
@@ -25,7 +26,7 @@ namespace InventoryWebApplication.Services
 
         public async Task<bool> AddUser(string username, string password, string role)
         {
-            bool alreadyExists = UsernameExists(username);
+            bool alreadyExists = await UsernameExists(username);
             if (alreadyExists) return false;
 
             string passwordHash = GetPasswordHashString(password);
@@ -43,7 +44,7 @@ namespace InventoryWebApplication.Services
 
         public async Task<bool> UpdateUser(int id, string username, string password, string role)
         {
-            User user = GetUser(id);
+            User user = await GetUser(id);
             
             if (user is null) return false;
             if (_databaseContext.Users.Where(o => o != user).Any(o => o.Name == username)) return false;
@@ -59,7 +60,7 @@ namespace InventoryWebApplication.Services
         
         public async Task<bool> UpdateUser(int id, string username, string role)
         {
-            User user = GetUser(id);
+            User user = await GetUser(id);
 
             if (user is null) return false;
             
@@ -71,31 +72,31 @@ namespace InventoryWebApplication.Services
             return true;
         }
 
-        [CanBeNull]
-        public User FindUserWithPassword(string username, string password)
+        [ItemCanBeNull]
+        public async Task<User> FindUserWithPassword(string username, string password)
         {
             string passwordHash = GetPasswordHashString(password);
             string lowerUsername = username.ToLower();
 
             // ReSharper disable once SpecifyStringComparison
-            User found = _databaseContext.Users.FirstOrDefault(o =>
+            User found = await _databaseContext.Users.FirstOrDefaultAsync(o =>
                 o.Name.ToLower() == lowerUsername &&
                 o.Password == passwordHash);
             return found?.Clone();
         }
-
-        [CanBeNull]
-        public User FindUser(int id)
+        
+        [ItemCanBeNull]
+        public async Task<User> FindUser(int id)
         {
-            User user = GetUser(id);
+            User user = await GetUser(id);
 
             return user?.CloneHidePassword();
         }
 
-        public bool UsernameExists(string username)
+        public async Task<bool> UsernameExists(string username)
         {
             string lowerUsername = username.ToLower();
-            return _databaseContext.Users.FirstOrDefault(o => o.Name.ToLower() == lowerUsername) is not null;
+            return await _databaseContext.Users.FirstOrDefaultAsync(o => o.Name.ToLower() == lowerUsername) is not null;
         }
 
         public IEnumerable<User> GetUsers()
@@ -114,7 +115,7 @@ namespace InventoryWebApplication.Services
         
         public async Task<bool> DeleteUser(int id)
         {
-            User user = GetUser(id);
+            User user = await GetUser(id);
 
             if (user is null) return false;
 
@@ -125,7 +126,7 @@ namespace InventoryWebApplication.Services
 
         public async Task<bool> DeleteUser(int id, string ignoreUsername)
         {
-            User user = GetUser(id);
+            User user = await GetUser(id);
 
             if (user is null || string.Equals(user.Name, ignoreUsername, StringComparison.OrdinalIgnoreCase))
                 return false;
@@ -142,16 +143,16 @@ namespace InventoryWebApplication.Services
             return Encoding.UTF8.GetString(passwordHash);
         }
         
-        [CanBeNull]
-        private User GetUser(int id)
+        [ItemCanBeNull]
+        private async Task<User> GetUser(int id)
         {
-            return _databaseContext.Users.FirstOrDefault(o => o.Id == id);
+            return await _databaseContext.Users.FirstOrDefaultAsync(o => o.Id == id);
         }
-
-        [CanBeNull]
-        private User GetUser(string name)
+        
+        [ItemCanBeNull]
+        private async Task<User> GetUser(string name)
         {
-            return _databaseContext.Users.FirstOrDefault(o => o.Name == name);
+            return await _databaseContext.Users.FirstOrDefaultAsync(o => o.Name == name);
         }
     }
 }

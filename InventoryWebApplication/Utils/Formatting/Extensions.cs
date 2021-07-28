@@ -49,5 +49,13 @@ namespace InventoryWebApplication.Utils.Formatting
         {
             return o.EndsWith(suffix) ? o.Substring(0, o.Length - suffix.Length) : o;
         }
+
+        public static string CutAfter(this string str, int max)
+        {
+            if (str.Length < max)
+                return str;
+
+            return str[..(max - 3)] + "...";
+        }
     }
 }

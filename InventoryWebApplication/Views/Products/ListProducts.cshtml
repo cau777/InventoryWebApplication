@@ -1,3 +1,7 @@
+@using InventoryWebApplication.Services
+@using InventoryWebApplication.Utils.Formatting
+@inject ProductsService _productsService
+
 @{
     ViewBag.Title = "Products Management";
     ViewBag.PreviousPage = "";
@@ -5,3 +9,76 @@
 }
 
 <h3>Products</h3>
+<div class="btn-toolbar">
+    <a asp-controller="Products" asp-action="AddProductForm">
+        <button>
+            <span>Add</span>
+        </button>
+    </a>
+</div>
+
+<table class="table table-bordered">
+    <colgroup>
+        <col span="1" style="width: 6%">
+        <col span="1" style="width: 30%">
+        <col span="1" style="width: auto">
+        <col span="1" style="width: 12%">
+        <col span="1" style="width: 12%">
+    </colgroup>
+
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Desc</th>
+        <th>Cost</th>
+        <th>Sell Price</th>
+    </tr>
+
+    @foreach (Product product in _productsService.GetProducts())
+    {
+        <tr>
+            <td>
+                <a class="normal-text-link" href="/products/edit/@product.Id">
+                    <div>
+                        @product.Id
+                    </div>
+                </a>
+            </td>
+            <td>
+                <a class="normal-text-link" href="/products/edit/@product.Id">
+                    <div>
+                        @product.Name
+                    </div>
+                </a>
+            </td>
+            <td>
+                <a class="normal-text-link" href="/products/edit/@product.Id">
+                    <div>
+                        @product.Description.CutAfter(40)
+                    </div>
+                </a>
+            </td>
+            <td>
+                <a class="normal-text-link" href="/products/edit/@product.Id">
+                    <div>
+                        @product.Cost
+                    </div>
+                </a>
+            </td>
+            <td>
+                <a class="normal-text-link" href="/products/edit/@product.Id">
+                    <div>
+                        @product.SellPrice
+                    </div>
+                </a>
+            </td>
+        </tr>
+    }
+</table>
+
+@section Scripts
+{
+    <script>
+        
+    </script>
+}

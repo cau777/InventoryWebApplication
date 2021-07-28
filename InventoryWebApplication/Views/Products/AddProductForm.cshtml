@@ -1,0 +1,23 @@
+@{
+    ViewBag.Title = "Add Product";
+    ViewBag.PreviousPage = "products";
+    Layout = "_FormsLayout";
+}
+
+<form class="simple-form" method="post" asp-controller="Products" asp-action="AddProduct">
+    <div class="form-body">
+        <label class="form-label" for="nameInput">Name: </label>
+        <input type="text" name="name" id="nameInput"/><br/>
+
+        <label class="form-label" for="descriptionInput">Description: </label>
+        <input type="text" name="description" id="descriptionInput"/><br/>
+
+
+        <label class="form-label" for="costInput">Cost: </label>
+        <input type="number" step="0.01" min="0" max="@float.MaxValue" name="cost" id="costInput"/><br/>
+
+        <label class="form-label" for="sellInput">Sell price: </label>
+        <input type="number" step="0.01" min="0" max="@float.MaxValue" name="sell" id="sellInput"/><br/>
+    </div>
+    <button type="submit">Add</button>
+</form>

@@ -21,7 +21,7 @@ namespace InventoryWebApplication.Controllers
 
         [HttpGet]
         [Authorize(Roles = Role.HrManager)]
-        public IActionResult UserList()
+        public IActionResult ListUsers()
         {
             return View();
         }
@@ -43,7 +43,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(role))
                 return View("AddUserForm", new MessageOperation("Role is required"));
 
-            if (await _usersService.UsernameExists(username))
+            if (await _usersService.UserExists(username))
                 return View("AddUserForm", new MessageOperation("This user already exists"));
 
             if (!Role.AvailableRoles.Contains(role))

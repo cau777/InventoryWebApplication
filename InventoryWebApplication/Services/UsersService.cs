@@ -26,7 +26,7 @@ namespace InventoryWebApplication.Services
 
         public async Task<bool> AddUser(string username, string password, string role)
         {
-            bool alreadyExists = await UsernameExists(username);
+            bool alreadyExists = await UserExists(username);
             if (alreadyExists) return false;
 
             string passwordHash = GetPasswordHashString(password);
@@ -93,10 +93,10 @@ namespace InventoryWebApplication.Services
             return user?.CloneHidePassword();
         }
 
-        public async Task<bool> UsernameExists(string username)
+        public async Task<bool> UserExists(string username)
         {
             string lowerUsername = username.ToLower();
-            return await _databaseContext.Users.FirstOrDefaultAsync(o => o.Name.ToLower() == lowerUsername) is not null;
+            return await _databaseContext.Users.AnyAsync(o => o.Name.ToLower() == lowerUsername);
         }
 
         public IEnumerable<User> GetUsers()

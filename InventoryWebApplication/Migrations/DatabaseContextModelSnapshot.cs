@@ -21,7 +21,7 @@ namespace InventoryWebApplication.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<float>("BuyPrice")
+                    b.Property<float>("Cost")
                         .HasColumnType("REAL");
 
                     b.Property<string>("Description")

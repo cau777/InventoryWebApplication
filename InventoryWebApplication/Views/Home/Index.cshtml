@@ -13,7 +13,7 @@
     <div class="card-deck card-actions ">
         @if (User.HasAccessTo(Role.HrManager))
         {
-            <a class="normal-text-link" asp-controller="Users" asp-action="UserList">
+            <a class="normal-text-link" asp-controller="Users" asp-action="ListUsers">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title text-dark">Manage Users</h5>

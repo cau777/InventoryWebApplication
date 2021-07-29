@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Models.Operations;
+using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

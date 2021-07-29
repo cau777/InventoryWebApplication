@@ -1,6 +1,6 @@
 @using InventoryWebApplication.Services
 @using InventoryWebApplication.Utils.Formatting
-@model InventoryWebApplication.Models.Operations.MessageIdOperation
+@model InventoryWebApplication.Operations.MessageIdOperation
 @inject UsersService _usersService
 
 @{
@@ -37,7 +37,7 @@ else
             <select name="role" id="roleInput">
                 @foreach (string possibleRole in Role.AvailableRoles)
                 {
-                    <option value="@possibleRole">@possibleRole.Capitalize()</option>
+                    <option value="@possibleRole">@Role.GetFormattedName(possibleRole)</option>
                 }
             </select>
         </div>

@@ -1,4 +1,4 @@
-namespace InventoryWebApplication.Models.Operations
+namespace InventoryWebApplication.Operations
 {
     public class MessageOperation
     {

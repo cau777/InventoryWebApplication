@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Models.Operations;
+using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services;
 using InventoryWebApplication.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -98,11 +98,7 @@ namespace InventoryWebApplication.Controllers
             if (!Role.AvailableRoles.Contains(role))
                 return View("AddUserForm", new MessageIdOperation("Invalid role", id));
 
-            bool result;
-            if (string.IsNullOrWhiteSpace(password))
-                result = await _usersService.UpdateUser(id, username, role);
-            else
-                result = await _usersService.UpdateUser(id, username, password, role);
+            bool result = await _usersService.UpdateUser(id, username, role, password);
             
             if(result)
                 return View("EditUserForm", new MessageIdOperation("Changes saved", MessageSeverity.info, id));

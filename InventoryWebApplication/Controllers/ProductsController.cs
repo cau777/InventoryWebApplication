@@ -2,7 +2,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Models.Operations;
+using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

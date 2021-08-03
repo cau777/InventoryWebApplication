@@ -1,0 +1,68 @@
+@using InventoryWebApplication.Services
+@using System.Globalization
+@model InventoryWebApplication.Operations.MessageIdOperation
+@inject ProductsService _productsService
+
+@{
+    ViewBag.Title = "Edit Product";
+    ViewBag.PreviousPage = "products";
+    Layout = "_FormsLayout";
+}
+
+@{
+    Product product = await _productsService.FindProduct(Model.Id);
+}
+
+@if (product is null)
+{
+    <h1>Product not found</h1>
+}
+else
+{
+    <form accept-charset="UTF-8" action="/products/edit/@Model.Id" class="simple-form" method="post">
+        <div class="form-body">
+            <label class="form-label" for="idInput">Id: </label>
+            <input value="@product.Id" readonly disabled type="text" id="idInput">
+            <br>
+
+            <label class="form-label" for="nameInput">Name: </label>
+            <input value="@product.Name" name="name" type="text" id="nameInput">
+            <br>
+
+            <div class="form-field">
+                <label class="form-label" for="descriptionInput">Description: </label>
+                <textarea type="text" name="description" id="descriptionInput" cols="22" rows="5">@product.Description</textarea>
+            </div>
+
+            <label class="form-label" for="availableQuantityInput">Available: </label>
+            <input value="@product.AvailableQuantity.ToString(CultureInfo.InvariantCulture)" type="number" step="1" min="0" max="@int.MaxValue" name="availableQuantity" id="availableQuantityInput"/>
+            <br/>
+
+            <label class="form-label" for="costInput">Cost: </label>
+            <input value="@product.Cost.ToString(CultureInfo.InvariantCulture)" type="number" step="0.01" min="0" max="@float.MaxValue" name="cost" id="costInput"/>
+            <br/>
+
+            <label class="form-label" for="sellInput">Sell price: </label>
+            <input value="@product.SellPrice.ToString(CultureInfo.InvariantCulture)" type="number" step="0.01" min="0" max="@float.MaxValue" name="sell" id="sellInput"/>
+            <br/>
+        </div>
+
+        <div>
+            <button class="btn-primary" type="submit">Save</button>
+            <a href="/products">
+                <button class="btn-primary" type="button">Discard</button>
+            </a>
+            <button class="btn-primary" id="btnDelete" type="button">Delete product</button>
+        </div>
+    </form>
+
+@section Scripts
+{
+    <script>
+        $('#btnDelete').click(function() {
+            sendDeleteRequest("/users/delete/@Model.Id")
+            redirectTo("/products");
+        });
+    </script>
+}
+}

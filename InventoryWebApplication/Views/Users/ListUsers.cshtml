@@ -11,49 +11,49 @@
 <h3>Users</h3>
 <div class="btn-toolbar">
     <a asp-controller="Users" asp-action="AddUserForm">
-        <button>
-            <span>Add</span>
-        </button>
+        <button class="btn-secondary">Add</button>
     </a>
 </div>
-<table class="table table-bordered">
-    <colgroup>
-        <col span="1" style="width: 6%">
-        <col span="1" style="width: auto">
-        <col span="1" style="width: auto">
-    </colgroup>
-    <tr>
-        <th>Id</th>
-        <th>Name</th>
-        <th>Role</th>
-    </tr>
-    @foreach (User user in _usersService.GetUsers().Where(o => o.Name != User.Claims.GetName()))
-    {
+<div class="table-wrapper table-products-wrapper">
+    <table class="table table-bordered">
+        <colgroup>
+            <col span="1" style="width: 6%">
+            <col span="1" style="width: auto">
+            <col span="1" style="width: auto">
+        </colgroup>
         <tr>
-            <td>
-                <a class="normal-text-link" href="/users/edit/@user.Id">
-                    <div>
-                        @user.Id
-                    </div>
-                </a>
-            </td>
-            <td>
-                <a class="normal-text-link" href="/users/edit/@user.Id">
-                    <div>
-                        @user.Name
-                    </div>
-                </a>
-            </td>
-            <td>
-                <a class="normal-text-link" href="/users/edit/@user.Id">
-                    <div>
-                        @Role.GetFormattedName(user.Role)
-                    </div>
-                </a>
-            </td>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Role</th>
         </tr>
-    }
-</table>
+        @foreach (User user in _usersService.GetUsers().Where(o => o.Name != User.Claims.GetName()))
+        {
+            <tr>
+                <td>
+                    <a class="normal-text-link" href="/users/edit/@user.Id">
+                        <div>
+                            @user.Id
+                        </div>
+                    </a>
+                </td>
+                <td>
+                    <a class="normal-text-link" href="/users/edit/@user.Id">
+                        <div>
+                            @user.Name
+                        </div>
+                    </a>
+                </td>
+                <td>
+                    <a class="normal-text-link" href="/users/edit/@user.Id">
+                        <div>
+                            @Role.GetFormattedName(user.Role)
+                        </div>
+                    </a>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
 
 @section Scripts
 {

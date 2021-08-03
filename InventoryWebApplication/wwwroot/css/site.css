@@ -95,6 +95,26 @@ body {
     margin-bottom: 20px;
 }
 
+.simple-form textarea {
+    min-height: 30px;
+}
+
+.simple-form .form-field {
+    margin-bottom: 6px;
+}
+
+.simple-form .form-field * {
+    vertical-align: top;
+}
+
+.simple-form input {
+    min-width: 182px;
+}
+
+.simple-form textarea {
+    min-width: 182px;
+}
+
 div.alert-warning {
     padding: 10px;
 }
@@ -138,4 +158,56 @@ div.alert-success {
 table tr td a {
     text-decoration: none;
     color: black;
+}
+
+.table-wrapper {
+    overflow-y: scroll;
+    border: lightgray solid 1px;
+    border-radius: .25rem;
+}
+
+.table-products-wrapper {
+    max-height: 60vh;
+    min-height: 60vh;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.table-products-wrapper table {
+    margin: 0;
+}
+
+.card-fixed-width textarea {
+    resize: none;
+    padding: 4px;
+}
+
+.card-fixed-width {
+    max-width: 210px;
+}
+
+.card-fixed-width input {
+    width: 10.5rem;
+}
+
+.card-fixed-width select {
+    width: 10.5rem;
+}
+
+div .display-horizontal {
+    display: flex;
+    flex-direction: row
+}
+
+.table-select-id {
+    cursor: pointer;
+}
+
+.btn-secondary.btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    margin-right: 2px;
+    margin-left: 2px;
 }

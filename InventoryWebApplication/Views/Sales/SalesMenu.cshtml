@@ -1,0 +1,331 @@
+@using InventoryWebApplication.Services
+@using InventoryWebApplication.Utils.Formatting
+@model dynamic
+@inject SettingsService _settingsService;
+@inject ProductsService _productsService;
+
+@{
+    ViewBag.Title = "Sales Menu";
+    ViewBag.PreviousPage = "";
+    Layout = "_Layout";
+}
+
+<div>
+    <div class="card-deck">
+        <div class="card card-fixed-width">
+            <div class="card-body">
+                <h5 class="card-subtitle">Id</h5>
+                <div class="display-horizontal">
+                    <input id="idInput" min="0" max="@int.MaxValue" type="number" style="width: 8rem"/>
+                    <button class="btn-secondary btn-icon" type="button" data-toggle="modal" data-target="#searchModal">
+                        <span uk-icon="icon: search; ratio: 1.1"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-fixed-width">
+            <div class="card-body">
+                <h5 class="card-subtitle">Quantity</h5>
+                <input id="quantityInput" value="1" min="1" max="@int.MaxValue" type="number"/>
+            </div>
+        </div>
+
+    </div>
+    <div style="margin-top: 5px">
+        <button class="btn-secondary" id="btnAddProduct">Add Item</button>
+        <button class="btn-secondary" id="btnClear">Clear</button>
+    </div>
+</div>
+
+<div id="searchModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="searchModalLabel">Searching</h5>
+            </div>
+
+            <div class="modal-body">
+                <input type="text" id="searchModalInput">
+
+                <div class="table-wrapper">
+                    <table class="table" id="searchModalTable">
+                        <colgroup>
+                            <col span="1" style="width: 30%">
+                            <col span="1" style="width: auto">
+                        </colgroup>
+
+                        <thead>
+                        <th>Name</th>
+                        <th>Description</th>
+                        </thead>
+
+                        <tbody id="searchModalTableBody">
+                        @foreach (Product product in _productsService.GetProducts())
+                        {
+                            <tr>
+                                <td>
+                                    <div class="table-select-id" data-name="@product.Name.ToLower()" data-id="@product.Id">
+                                        @product.Name.CutAfter(20)
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="table-select-id" data-id="@product.Id">
+                                        @product.Description.CutAfter(30)
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="searchModalClose" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-wrapper table-products-wrapper">
+    <table class="table table-bordered" id="productsTable">
+        <colgroup>
+            <col span="1" style="width: 10%"/>
+            <col span="1" style="width: 10%"/>
+            <col span="1" style="width: 70%"/>
+            <col span="1" style="width: 10%"/>
+        </colgroup>
+
+        <thead>
+        <tr class="table-header">
+            <th>Id</th>
+            <th>Quant.</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+
+        <tbody id="productsTableBody">
+
+        </tbody>
+    </table>
+</div>
+
+<div class="card-deck">
+    <div class="card card-fixed-width">
+        <div class="card-body">
+            <h5 class="card-subtitle">Payment method</h5>
+            <select id="paymentMethodInput" style="height: 30px">
+                @foreach (string paymentMethod in _settingsService.GetAvailablePaymentMethods())
+                {
+                    <option value="@paymentMethod">@paymentMethod</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="card card-fixed-width">
+        <div class="card-body">
+            <h5 class="card-subtitle">Discount</h5>
+            <input id="discountInput" type="text"/>
+        </div>
+    </div>
+
+    <div class="card card-fixed-width">
+        <div class="card-body">
+            <h5 class="card-subtitle">Total price</h5>
+            <input value="0" data-currency="$" id="totalPriceInput" disabled readonly style="text-align: end"/>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 5px">
+    <button class="btn-primary" id="btnFinish">Finish Sale</button>
+    <a class="normal-text-link" asp-controller="Home" asp-action="Index">
+        <button class="btn-primary">Cancel</button>
+    </a>
+</div>
+
+@section Scripts
+{
+    <script>
+        const idInput = document.getElementById('idInput');
+        const btnClear = document.getElementById('btnClear');
+        const productsTable = document.getElementById('productsTable');
+        const btnAddProduct = document.getElementById('btnAddProduct');
+        const btnFinish = document.getElementById('btnFinish');
+        const quantityInput = document.getElementById('quantityInput');
+        const discountInput = document.getElementById('discountInput');
+        const totalPriceInput = document.getElementById('totalPriceInput');
+        const searchModalInput = document.getElementById('searchModalInput');
+        const searchModalTable = document.getElementById('searchModalTable');
+        const searchModalClose = document.getElementById('searchModalClose');
+        const productsTableBody = document.getElementById('productsTableBody');
+        const searchModalTableBody = document.getElementById('searchModalTableBody');
+        let canFinishSell = true;
+        
+        btnAddProduct.onclick = function (){
+            addProduct(idInput.value, quantityInput.value);
+        };
+        btnClear.onclick = clear;
+        
+        discountInput.oninput = updateTotalPrice;
+        searchModalInput.oninput = function() {
+            let query = searchModalInput.value.trim().toLowerCase();
+            
+            for (let tableBodyElement of searchModalTableBody.children) {
+                if (tableBodyElement.tagName.toLowerCase() === 'tr') {
+                  let cellName = tableBodyElement.children[0].children[0].getAttribute('data-name');
+                  tableBodyElement.hidden = !cellName.includes(query);
+                }
+            }
+        };
+        btnFinish.onclick = function() {
+            if (!canFinishSell) return;
+            
+            let products = [];
+            for (let productsTableElement of productsTableBody.children) {
+                let idCell = productsTableElement.children[0];
+                let quantityCell = productsTableElement.children[1];
+                products.push({ Id: Number(idCell.innerHTML), Quantity: Number(quantityCell.innerHTML) });
+            }
+            
+            if (products.length === 0) return;
+            
+            let saleInfo = { products: products, discount: discountInput.value };
+            let request = new XMLHttpRequest();
+            let json = JSON.stringify(saleInfo)
+            
+            request.open('POST', '/sales/sell', true);
+            request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+            canFinishSell = false;
+            request.onloadend = function () {
+                clear()
+                canFinishSell = true;
+                if (request.status === 200) alert('Success');
+                else alert('Could not complete sale. Error ' + status);
+            }
+            
+            request.send(json);
+        }
+        
+        $('.table-select-id').click(function() {
+            idInput.value = this.getAttribute('data-id');
+            searchModalClose.click();
+        });
+        
+        function clear(){
+            productsTableBody.innerHTML = '';
+            updateTotalPrice();
+        }
+        
+        function findRowInTable(id) {
+            for (let tableElement of productsTableBody.children) {
+                if(tableElement.tagName.toLowerCase() === 'tr') {
+                    let idCell = tableElement.children[0];
+                    if (idCell.innerHTML === id) {
+                        return tableElement;    
+                    }
+                }
+            }
+            return undefined;
+        }
+        
+        function calcDiscount(totalPrice) {
+            let discountString = discountInput.value;
+            if (discountString.search('%') !== -1){
+                discountString = discountString.replace('%', '');
+                let discountValue = Number.parseFloat(discountString);
+                
+                if (!isNaN(discountValue))
+                return totalPrice * discountValue / 100;
+            } else {
+                let discountValue = Number.parseFloat(discountString);
+                
+                if (!isNaN(discountValue))
+                return discountValue;
+            }
+            return 0;
+        }
+        
+        function calTotalPrice() {
+            let totalPrice = 0;
+            for (let tableElement of productsTableBody.children) {
+                if(tableElement.tagName.toLowerCase() === 'tr') {
+                    let quantityCell = tableElement.children[1];
+                    let priceCell = tableElement.children[3];
+                    totalPrice += Number(priceCell.innerHTML) * Number(quantityCell.innerHTML);
+                }
+            }
+            return totalPrice;
+        }
+            
+        
+        function updateTotalPrice() {
+            let totalPrice = calTotalPrice();
+            totalPrice -= calcDiscount(totalPrice);
+            
+            totalPriceInput.value = totalPriceInput.getAttribute('data-currency') +  String(roundTo(totalPrice, 2));
+        }
+        
+        function addProduct(id, quantity) {
+            let idRowInTable = findRowInTable(id);
+            
+            let request = new XMLHttpRequest();
+            request.responseType = 'json';
+            request.open('GET', '/products/' + id);
+            request.send();
+            
+            if (idRowInTable === undefined) {
+                request.onloadend = function() {
+                    if (request.status !== 200) {
+                      alert("Could not add product. Id " + id + " not Found.");
+                      return;
+                    }
+                    
+                    let product = request.response;
+                    if (product.availableQuantity < quantity) {
+                      alert("Could not add product. Only " + product.availableQuantity + " items available.");
+                      return;
+                    }
+                    
+                    let row = document.createElement('tr');
+                    let cellId = document.createElement('td');
+                    cellId.innerHTML = id;
+                    
+                    let cellQuantity = document.createElement('td');
+                    cellQuantity.innerHTML = quantity;
+                    
+                    let cellName = document.createElement('td');
+                    cellName.innerHTML = product.name;
+                    
+                    let cellPrice = document.createElement('td');
+                    cellPrice.innerHTML = product.sellPrice;
+                    
+                    row.appendChild(cellId);
+                    row.appendChild(cellQuantity);
+                    row.appendChild(cellName);
+                    row.appendChild(cellPrice);
+                    productsTableBody.appendChild(row);
+                    updateTotalPrice();
+                };
+            } else {
+                request.onloadend = function() {
+                    let product = request.response;
+                    let cellQuantity = idRowInTable.children[1];
+                    let newQuantity = Number(cellQuantity.innerHTML) + Number(quantity);
+                    if (product.availableQuantity < newQuantity) {
+                        alert("Could not add product. Only " + product.availableQuantity + " items available.");
+                        return;
+                    }
+                    cellQuantity.innerHTML = String(newQuantity);
+                    updateTotalPrice();
+                }
+            }
+        }
+        
+        updateTotalPrice();
+    </script>
+}

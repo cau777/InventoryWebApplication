@@ -15,10 +15,27 @@ namespace InventoryWebApplication.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.8");
 
+            modelBuilder.Entity("InventoryWebApplication.Models.PaymentMethod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Method")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentMethods");
+                });
+
             modelBuilder.Entity("InventoryWebApplication.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AvailableQuantity")
                         .HasColumnType("INTEGER");
 
                     b.Property<float>("Cost")

@@ -10,16 +10,16 @@
 }
 
 @{
-    User user = await _usersService.FindUser(Model.UserId);
+    User user = await _usersService.FindUser(Model.Id);
 }
 
 @if (user is null)
 {
-    <h1>This user does not exist</h1>
+    <h1>User not found</h1>
 }
 else
 {
-    <form class="simple-form" accept-charset="UTF-8" method="post" action="/users/edit/@Model.UserId">
+    <form class="simple-form" accept-charset="UTF-8" method="post" action="/users/edit/@Model.Id">
         <div class="form-body">
             <label class="form-label" for="idInput">Id: </label>
             <input value="@user.Id" readonly disabled type="text" id="idInput">
@@ -43,11 +43,11 @@ else
         </div>
 
         <div>
-            <button type="submit">Save</button>
-            <a href="/users/">
-                <button type="button">Discard</button>
+            <button class="btn-primary" type="submit">Save</button>
+            <a href="/users">
+                <button class="btn-primary" type="button">Discard</button>
             </a>
-            <button id="btnDelete" type="button">Delete user</button>
+            <button class="btn-primary" id="btnDelete" type="button">Delete user</button>
         </div>
     </form>
 
@@ -55,10 +55,8 @@ else
 {
     <script>
         $('#btnDelete').click(function() {
-            let request = new XMLHttpRequest();
-            request.open("DELETE", "/users/delete/@Model.UserId", false)
-            request.send();
-            window.location.assign("/users");
+            sendDeleteRequest("/users/delete/@Model.Id");
+            redirectTo("/users");
         });
     </script>
 }

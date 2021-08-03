@@ -70,7 +70,7 @@ namespace InventoryWebApplication.Controllers
         public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
             bool result = await _usersService.DeleteUser(id, User.Claims.GetName());
-            return Ok();
+            return result ? Ok() : NotFound();
         }
 
         [HttpGet]
@@ -84,8 +84,8 @@ namespace InventoryWebApplication.Controllers
         [HttpPost]
         [Route("edit/{id:int}")]
         [Authorize(Roles = Role.HrManager)]
-        public async Task<IActionResult> EditUser([FromRoute] int id, [FromForm] string username, [FromForm] string password,
-            [FromForm] string role)
+        public async Task<IActionResult> EditUser([FromRoute] int id, [FromForm] string username,
+            [FromForm] string password, [FromForm] string role)
         {
             role = role.ToLower();
 
@@ -99,10 +99,11 @@ namespace InventoryWebApplication.Controllers
                 return View("AddUserForm", new MessageIdOperation("Invalid role", id));
 
             bool result = await _usersService.UpdateUser(id, username, role, password);
-            
-            if(result)
-                return View("EditUserForm", new MessageIdOperation("Changes saved", MessageSeverity.info, id));
-            return View("EditUserForm", new MessageIdOperation("Failed to update user", id));
+
+            return View("EditUserForm",
+                result
+                    ? new MessageIdOperation("Changes saved", MessageSeverity.info, id)
+                    : new MessageIdOperation("Failed to update user", id));
         }
     }
 }

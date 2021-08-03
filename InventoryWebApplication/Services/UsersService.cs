@@ -16,9 +16,8 @@ namespace InventoryWebApplication.Services
     public class UsersService
     {
         public int UserCount => _databaseContext.Users.Count();
-        public int ProductsCount => _databaseContext.Products.Count();
 
-        private readonly ILogger _logger;
+        private readonly ILogger<UsersService> _logger;
         private readonly DatabaseContext _databaseContext;
 
         public UsersService(DatabaseContext databaseContext, ILogger<UsersService> logger)
@@ -26,58 +25,7 @@ namespace InventoryWebApplication.Services
             _databaseContext = databaseContext;
             _logger = logger;
         }
-
-        public async Task<bool> AddUser(string username, string password, string role)
-        {
-            bool alreadyExists = await UserExists(username);
-            if (alreadyExists)
-            {
-                _logger.LogWarning($"Failed to add user {username};{password};{role}. Username already exists.");
-                return false;
-            }
-
-            string passwordHash = GetPasswordHashString(password);
-            User user = new()
-            {
-                Name = username,
-                Password = passwordHash,
-                Role = role
-            };
-
-            _databaseContext.Users.Add(user);
-            await _databaseContext.SaveChangesAsync();
-            
-            _logger.LogInformation($"Successfully added user {username};{password};{role} to the database.");
-            return true;
-        }
         
-        public async Task<bool> UpdateUser(int id, string username, string role, string password = null)
-        {
-            User user = await GetUser(id);
-
-            if (user is null)
-            {
-                _logger.LogWarning($"Failed to update user {id};{username};{role}. User does not exist.");
-                return false;
-            }
-            
-            if (_databaseContext.Users.Where(o => o != user).Any(o => o.Name == username))
-            {
-                _logger.LogWarning($"Failed to update user {id};{username};{role}. Username already exists.");
-                return false;
-            }
-            
-            user.Name = username;
-            if (!string.IsNullOrWhiteSpace(password))
-                user.Password = GetPasswordHashString(password);
-            user.Role = role;
-            
-            await _databaseContext.SaveChangesAsync();
-            
-            _logger.LogInformation($"Successfully updated user {id};{username};{role}");
-            return true;
-        }
-
         [ItemCanBeNull]
         public async Task<User> FindUserWithPassword(string username, string password)
         {
@@ -98,13 +46,7 @@ namespace InventoryWebApplication.Services
 
             return user?.CloneHidePassword();
         }
-
-        public async Task<bool> UserExists(string username)
-        {
-            string lowerUsername = username.ToLower();
-            return await _databaseContext.Users.AnyAsync(o => o.Name.ToLower() == lowerUsername);
-        }
-
+        
         public IEnumerable<User> GetUsers()
         {
             foreach (User user in _databaseContext.Users)
@@ -119,6 +61,63 @@ namespace InventoryWebApplication.Services
             }
         }
 
+        public async Task<bool> AddUser(string username, string password, string role)
+        {
+            bool alreadyExists = await UserExists(username);
+            if (alreadyExists)
+            {
+                _logger.LogWarning($"Failed to add user {username}. Username already exists.");
+                return false;
+            }
+
+            string passwordHash = GetPasswordHashString(password);
+            User user = new()
+            {
+                Name = username,
+                Password = passwordHash,
+                Role = role
+            };
+
+            _databaseContext.Users.Add(user);
+            await _databaseContext.SaveChangesAsync();
+            
+            _logger.LogInformation($"Successfully added user {username} to the database.");
+            return true;
+        }
+        
+        public async Task<bool> UpdateUser(int id, string username, string role, string password = null)
+        {
+            User user = await GetUser(id);
+
+            if (user is null)
+            {
+                _logger.LogWarning($"Failed to update user {id}. User does not exist.");
+                return false;
+            }
+            
+            if (_databaseContext.Users.Where(o => o != user).Any(o => o.Name == username))
+            {
+                _logger.LogWarning($"Failed to update user {id}. Username already exists.");
+                return false;
+            }
+            
+            user.Name = username;
+            if (!string.IsNullOrWhiteSpace(password))
+                user.Password = GetPasswordHashString(password);
+            user.Role = role;
+            
+            await _databaseContext.SaveChangesAsync();
+            
+            _logger.LogInformation($"Successfully updated user {id}");
+            return true;
+        }
+
+        public async Task<bool> UserExists(string username)
+        {
+            string lowerUsername = username.ToLower();
+            return await _databaseContext.Users.AnyAsync(o => o.Name.ToLower() == lowerUsername);
+        }
+        
         public async Task<bool> DeleteUser(int id, string ignoreUsername = "")
         {
             User user = await GetUser(id);

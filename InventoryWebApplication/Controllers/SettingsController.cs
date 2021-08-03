@@ -1,7 +1,18 @@
+using InventoryWebApplication.Models;
+using InventoryWebApplication.Operations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
 namespace InventoryWebApplication.Controllers
 {
-    public class SettingsController
+    [Route("settings")]
+    public class SettingsController : Controller
     {
-        
+        [HttpGet]
+        [Authorize(Roles = Role.HrManager)]
+        public IActionResult Settings()
+        {
+            return View(MessageOperation.Empty);
+        }
     }
 }

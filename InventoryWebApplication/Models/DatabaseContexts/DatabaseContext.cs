@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using Microsoft.EntityFrameworkCore;
 
 namespace InventoryWebApplication.Models.DatabaseContexts
 {
@@ -8,6 +9,7 @@ namespace InventoryWebApplication.Models.DatabaseContexts
         
         public DbSet<Product> Products { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<SaleInfo> Sales { get; set; }
         public DbSet<PaymentMethod> PaymentMethods { get; set; }
     }
 }

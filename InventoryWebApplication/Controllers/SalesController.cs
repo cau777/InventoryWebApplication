@@ -15,20 +15,18 @@ namespace InventoryWebApplication.Controllers
     public class SalesController : Controller
     {
         private readonly ProductsService _productsService;
-
-        public SalesController(ProductsService productsService)
+        private readonly SalesService _salesService;
+        public SalesController(ProductsService productsService, SalesService salesService)
         {
             _productsService = productsService;
+            _salesService = salesService;
         }
 
         [HttpGet]
         [Authorize(Roles = Role.HrManager + "," + Role.StockManager + "," + Role.Seller)]
         public IActionResult SalesMenu()
         {
-            return View(new
-            {
-                Currency = "$"
-            });
+            return View();
         }
 
         [HttpPost]
@@ -38,7 +36,7 @@ namespace InventoryWebApplication.Controllers
         {
             info.SellTime = DateTime.Now;
 
-            float total = 0;
+            double total = 0;
             foreach (ProductSale productSale in info.Products)
             {
                 Product product = await _productsService.FindProduct(productSale.Id);
@@ -47,18 +45,18 @@ namespace InventoryWebApplication.Controllers
                 total += product.SellPrice * productSale.Quantity;
             }
 
-            float discount;
+            double discount;
             if (info.Discount.Contains('%'))
             {
-                _ = float.TryParse(info.Discount.Replace("%", "").Replace(",", "."), NumberStyles.Any,
+                _ = double.TryParse(info.Discount.Replace("%", "").Replace(",", "."), NumberStyles.Any,
                     CultureInfo.InvariantCulture,
-                    out float percentage);
+                    out double percentage);
 
                 discount = total * percentage / 100f;
             }
             else
             {
-                _ = float.TryParse(info.Discount.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture,
+                _ = double.TryParse(info.Discount.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture,
                     out discount);
             }
 
@@ -69,6 +67,8 @@ namespace InventoryWebApplication.Controllers
             {
                 await _productsService.ShiftProductQuantity(productSale.Id, -productSale.Quantity);
             }
+
+            await _salesService.AddSale(info);
 
             return Ok();
         }

@@ -47,6 +47,7 @@ namespace InventoryWebApplication
             services.AddTransient<UsersService>();
             services.AddTransient<ProductsService>();
             services.AddTransient<SettingsService>();
+            services.AddTransient<SalesService>();
 
             services.AddMvc(o =>
             {

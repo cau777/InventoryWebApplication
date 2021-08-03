@@ -61,7 +61,7 @@
                         </thead>
 
                         <tbody id="searchModalTableBody">
-                        @foreach (Product product in _productsService.GetProducts())
+                        @foreach (Product product in _productsService.GetProducts().Where(o => o.AvailableQuantity > 0))
                         {
                             <tr>
                                 <td>

@@ -60,6 +60,8 @@ namespace InventoryWebApplication.Controllers
                     out discount);
             }
 
+            if (total - discount < 0) discount = total;
+            
             info.Discount = discount.ToString(CultureInfo.InvariantCulture);
             info.TotalPrice = total - discount;
 
@@ -68,6 +70,7 @@ namespace InventoryWebApplication.Controllers
                 await _productsService.ShiftProductQuantity(productSale.Id, -productSale.Quantity);
             }
 
+            // Console.WriteLine(JsonConvert.SerializeObject(info));
             await _salesService.AddSale(info);
 
             return Ok();

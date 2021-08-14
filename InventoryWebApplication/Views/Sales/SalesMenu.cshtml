@@ -27,7 +27,7 @@
         <div class="card card-fixed-width">
             <div class="card-body">
                 <h5 class="card-subtitle">Quantity</h5>
-                <input id="quantityInput" value="1" min="1" max="@int.MaxValue" type="number"/>
+                <input id="quantityInput" value="1" type="number"/>
             </div>
         </div>
 
@@ -166,12 +166,13 @@
         const searchModalTableBody = document.getElementById('searchModalTableBody');
         let canFinishSell = true;
         
-        btnAddProduct.onclick = function (){
-            addProduct(idInput.value, quantityInput.value);
-        };
+        btnAddProduct.onclick = () => addProduct(idInput.value, quantityInput.value);
         btnClear.onclick = clear;
         
-        discountInput.oninput = updateTotalPrice;
+        idInput.oninput = () => restrictValues(idInput, 1, @int.MaxValue);
+        quantityInput.oninput = () => restrictValues(quantityInput, 1, @int.MaxValue);
+        
+        discountInput.oninput = () => restrictValuesAndThen(discountInput, @int.MinValue, @int.MaxValue, updateTotalPrice);
         searchModalInput.oninput = function() {
             let query = searchModalInput.value.trim().toLowerCase();
             
@@ -215,6 +216,19 @@
             idInput.value = this.getAttribute('data-id');
             searchModalClose.click();
         });
+        
+        function restrictValues(input, minValue, maxValue) {
+            let value = input.value.trim();
+            if (String(value) === "") return;
+            input.value = clamp(value, minValue, maxValue);
+        }
+        
+        function restrictValuesAndThen(input, minValue, maxValue, then) {
+            let value = input.value.trim();
+            if (String(value) === "") return;
+            input.value = clamp(value, minValue, maxValue);
+            then();
+        }
         
         function clear(){
             productsTableBody.innerHTML = '';
@@ -261,22 +275,17 @@
             }
             return totalPrice;
         }
-            
         
         function updateTotalPrice() {
             let totalPrice = calTotalPrice();
-            totalPrice -= calcDiscount(totalPrice);
+            totalPrice = clamp(totalPrice - calcDiscount(totalPrice), 0, @int.MaxValue);
             
-            totalPriceInput.value = totalPriceInput.getAttribute('data-currency') +  String(roundTo(totalPrice, 2));
+            totalPriceInput.value = totalPriceInput.getAttribute('data-currency') + String(roundTo(totalPrice, 2));
         }
         
         function addProduct(id, quantity) {
             let idRowInTable = findRowInTable(id);
-            
-            let request = new XMLHttpRequest();
-            request.responseType = 'json';
-            request.open('GET', '/products/' + id);
-            request.send();
+            let request = getProductRequest(id);
             
             if (idRowInTable === undefined) {
                 request.onloadend = function() {
@@ -297,6 +306,33 @@
                     
                     let cellQuantity = document.createElement('td');
                     cellQuantity.innerHTML = quantity;
+                    let clickFunction = function () {
+                        console.log('click');
+                        let prev = cellQuantity.innerHTML;
+                        cellQuantity.innerHTML = '';
+                        
+                        let input = document.createElement('input');
+                        input.value = prev;
+                        input.style.width = '5rem';
+                        input.type = 'number';
+                        
+                        input.onchange = function() {
+                            let request = getProductRequest(id);
+                            request.onloadend = function() {
+                                let product = request.response;
+                                let availableQuantity = product.availableQuantity;
+                                restrictValues(input, 1, availableQuantity);
+                                
+                                cellQuantity.innerHTML = input.value;
+                                updateTotalPrice();
+                            }
+                        }
+                        
+                        cellQuantity.appendChild(input);
+                    }
+                    
+                    // cellQuantity.ondblclick = clickFunction;
+                    cellQuantity.onclick = () => executeOnDoubleClick(clickFunction);
                     
                     let cellName = document.createElement('td');
                     cellName.innerHTML = product.name;

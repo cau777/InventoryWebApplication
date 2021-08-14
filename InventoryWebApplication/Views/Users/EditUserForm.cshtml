@@ -37,7 +37,14 @@ else
             <select name="role" id="roleInput">
                 @foreach (string possibleRole in Role.AvailableRoles)
                 {
-                    <option value="@possibleRole">@Role.GetFormattedName(possibleRole)</option>
+                    @if (possibleRole == user.Role)
+                    {
+                        <option value="@possibleRole" selected>@Role.GetFormattedName(possibleRole)</option>
+                    }
+                    else
+                    {
+                        <option value="@possibleRole">@Role.GetFormattedName(possibleRole)</option>
+                    }
                 }
             </select>
         </div>

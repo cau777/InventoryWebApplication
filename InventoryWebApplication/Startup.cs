@@ -1,6 +1,6 @@
 using System;
 using InventoryWebApplication.Attributes;
-using InventoryWebApplication.Models.DatabaseContexts;
+using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;

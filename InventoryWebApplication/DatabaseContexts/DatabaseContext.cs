@@ -1,7 +1,8 @@
 ﻿
+using InventoryWebApplication.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryWebApplication.Models.DatabaseContexts
+namespace InventoryWebApplication.DatabaseContexts
 {
     public class DatabaseContext : DbContext
     {

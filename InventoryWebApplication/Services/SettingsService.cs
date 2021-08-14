@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Models.DatabaseContexts;
 
 namespace InventoryWebApplication.Services
 {

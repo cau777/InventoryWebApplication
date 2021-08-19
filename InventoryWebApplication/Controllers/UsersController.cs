@@ -43,13 +43,13 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(role))
                 return View("AddUserForm", new MessageOperation("Role is required"));
 
-            if (await _usersService.UserExists(username))
+            if (_usersService.IsPresent(new User(name: username)))
                 return View("AddUserForm", new MessageOperation("This user already exists"));
 
             if (!Role.AvailableRoles.Contains(role))
                 return View("AddUserForm", new MessageOperation("Invalid role"));
 
-            if (await _usersService.AddUser(username, password, role))
+            if (await _usersService.Add(new User(name: username, password: password, role: role)))
                 return View("AddUserForm",
                     new MessageOperation($"Successfully added {username}", MessageSeverity.info));
 
@@ -69,7 +69,7 @@ namespace InventoryWebApplication.Controllers
         [Authorize(Roles = Role.HrManager)]
         public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
-            bool result = await _usersService.DeleteUser(id, User.Claims.GetName());
+            bool result = await _usersService.Delete(id, User.Claims.GetName());
             return result ? Ok() : NotFound();
         }
 
@@ -90,15 +90,18 @@ namespace InventoryWebApplication.Controllers
             role = role.ToLower();
 
             if (string.IsNullOrWhiteSpace(username))
-                return View("AddUserForm", new MessageIdOperation("Name is required", id));
+                return View("EditUserForm", new MessageIdOperation("Name is required", id));
+
+            if (!string.IsNullOrWhiteSpace(password) && !UsersService.IsPasswordValid(password))
+                return View("EditUserForm", new MessageIdOperation("Invalid password", id));
 
             if (string.IsNullOrWhiteSpace(role))
-                return View("AddUserForm", new MessageIdOperation("Role is required", id));
+                return View("EditUserForm", new MessageIdOperation("Role is required", id));
 
             if (!Role.AvailableRoles.Contains(role))
-                return View("AddUserForm", new MessageIdOperation("Invalid role", id));
+                return View("EditUserForm", new MessageIdOperation("Invalid role", id));
 
-            bool result = await _usersService.UpdateUser(id, username, role, password);
+            bool result = await _usersService.Update(new User(id, username, password, role));
 
             return View("EditUserForm",
                 result

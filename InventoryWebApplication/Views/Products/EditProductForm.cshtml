@@ -1,7 +1,7 @@
 @using InventoryWebApplication.Services
 @using System.Globalization
 @model InventoryWebApplication.Operations.MessageIdOperation
-@inject ProductsService _productsService
+@inject DatabaseService<Product> _productsService
 
 @{
     ViewBag.Title = "Edit Product";
@@ -10,7 +10,7 @@
 }
 
 @{
-    Product product = await _productsService.FindProduct(Model.Id);
+    Product product = await _productsService.GetById(Model.Id);
 }
 
 @if (product is null)
@@ -60,7 +60,7 @@ else
 {
     <script>
         $('#btnDelete').click(function() {
-            sendDeleteRequest("/users/delete/@Model.Id")
+            sendDeleteRequest("/products/delete/@Model.Id")
             redirectTo("/products");
         });
     </script>

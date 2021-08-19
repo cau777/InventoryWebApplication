@@ -2,32 +2,21 @@
 
 namespace InventoryWebApplication.Models
 {
-    public class User
+    public class User : IIdBasedModel
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
         public string Role { get; set; }
 
-        public User Clone()
-        {
-            return new()
-            {
-                Id = Id,
-                Name = Name,
-                Password = Password,
-                Role = Role
-            };
-        }
+        public User() { }
 
-        public User CloneHidePassword()
+        public User(int id = default, string name = null, string password = null, string role = null)
         {
-            return new()
-            {
-                Id = Id,
-                Name = Name,
-                Role = Role
-            };
+            Id = id;
+            Name = name;
+            Password = password;
+            Role = role;
         }
 
         public override string ToString()

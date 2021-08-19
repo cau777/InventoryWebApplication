@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Services;
 
 namespace InventoryWebApplication.CustomExceptions
 {

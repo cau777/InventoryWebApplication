@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using InventoryWebApplication.CustomExceptions;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Services;
 
 namespace InventoryWebApplication.Utils
 {

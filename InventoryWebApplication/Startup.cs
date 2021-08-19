@@ -1,6 +1,7 @@
 using System;
 using InventoryWebApplication.Attributes;
 using InventoryWebApplication.DatabaseContexts;
+using InventoryWebApplication.Models;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -9,8 +10,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.VisualStudio.Web.CodeGeneration;
 
 namespace InventoryWebApplication
 {
@@ -44,6 +43,9 @@ namespace InventoryWebApplication
             services.AddDbContext<DatabaseContext>(o =>
                 o.UseSqlite(Configuration["SQLiteConnection:SQLiteConnectionString"]));
 
+            services.AddTransient<DatabaseService<User>, UsersService>();
+            services.AddTransient<DatabaseService<Product>, ProductsService>();
+            
             services.AddTransient<UsersService>();
             services.AddTransient<ProductsService>();
             services.AddTransient<SettingsService>();

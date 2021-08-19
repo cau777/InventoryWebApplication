@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
@@ -6,7 +5,6 @@ using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.Internal;
 
 namespace InventoryWebApplication.Controllers
 {
@@ -38,21 +36,22 @@ namespace InventoryWebApplication.Controllers
         [HttpGet]
         [Route("{id:int}")]
         [Authorize(Roles = Role.HrManager + "," + Role.StockManager + "," + Role.Seller)]
-        public async Task<IActionResult> ProductById([FromRoute]int id)
+        public async Task<IActionResult> ProductById([FromRoute] int id)
         {
-            Product product = await _productsService.FindProduct(id);
+            Product product = await _productsService.GetById(id);
             if (product is null) return NotFound();
             return Json(product);
         }
-        
+
         [HttpPost]
         [Route("add")]
         [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
-        public async Task<IActionResult> AddProduct([FromForm] string name, [FromForm] string description, [FromForm] string availableQuantity, [FromForm] string cost, [FromForm] string sell)
+        public async Task<IActionResult> AddProduct([FromForm] string name, [FromForm] string description,
+            [FromForm] string availableQuantity, [FromForm] string cost, [FromForm] string sell)
         {
             if (!int.TryParse(availableQuantity, NumberStyles.Any, CultureInfo.InvariantCulture, out int quantity))
                 return View("AddProductForm", new MessageOperation($"Invalid quantity: {availableQuantity}"));
-            
+
             if (!float.TryParse(cost, NumberStyles.Any, CultureInfo.InvariantCulture, out float costPrice))
                 return View("AddProductForm", new MessageOperation($"Invalid cost: {cost}"));
 
@@ -62,7 +61,8 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return View("AddProductForm", new MessageOperation($"Invalid name: {name}"));
 
-            if (await _productsService.AddProduct(name, description, quantity, costPrice, sellPrice))
+            if (await _productsService.Add(new Product(name: name, description: description,
+                availableQuantity: quantity, cost: costPrice, sellPrice: sellPrice)))
                 return View("AddProductForm", new MessageOperation($"Successfully added {name}", MessageSeverity.info));
 
             return View("AddProductForm", new MessageOperation($"Failed to add {name}"));
@@ -73,7 +73,7 @@ namespace InventoryWebApplication.Controllers
         [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
-            bool result = await _productsService.DeleteProduct(id);
+            bool result = await _productsService.Delete(id);
             return result ? Ok() : NotFound();
         }
 
@@ -88,11 +88,13 @@ namespace InventoryWebApplication.Controllers
         [HttpPost]
         [Route("edit/{id:int}")]
         [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
-        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromForm] string name, [FromForm] string description, [FromForm] string availableQuantity, [FromForm] string cost, [FromForm] string sell)
+        public async Task<IActionResult> EditProduct([FromRoute] int id, [FromForm] string name,
+            [FromForm] string description, [FromForm] string availableQuantity, [FromForm] string cost,
+            [FromForm] string sell)
         {
             if (!int.TryParse(availableQuantity, NumberStyles.Any, CultureInfo.InvariantCulture, out int quantity))
                 return View("EditProductForm", new MessageIdOperation($"Invalid quantity: {availableQuantity}", id));
-            
+
             if (!float.TryParse(cost, NumberStyles.Any, CultureInfo.InvariantCulture, out float costPrice))
                 return View("EditProductForm", new MessageIdOperation($"Invalid cost: {cost}", id));
 
@@ -102,7 +104,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return View("EditProductForm", new MessageIdOperation($"Invalid name: {name}", id));
 
-            bool result = await _productsService.EditProduct(id, name, description, quantity,costPrice, sellPrice);
+            bool result = await _productsService.Update(new Product(id, name, description, quantity, costPrice, sellPrice));
             return View("EditProductForm",
                 result
                     ? new MessageIdOperation("Changes saved", MessageSeverity.info, id)

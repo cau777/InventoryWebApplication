@@ -14,9 +14,20 @@ namespace InventoryWebApplication.Services
             _databaseContext = databaseContext;
         }
 
-        public IEnumerable<string> GetAvailablePaymentMethods()
+        public IEnumerable<string> GetPaymentMethods()
         {
-            return _databaseContext.PaymentMethods.Select(method => method.Method);
+            return _databaseContext.PaymentMethods.Select(method => method.Name);
+        }
+
+        public void SetPaymentMethods(IEnumerable<PaymentMethod> methods)
+        {
+            foreach (PaymentMethod method in methods)
+            {
+                if (!_databaseContext.PaymentMethods.Any(o => o.Name == method.Name))
+                {
+                    _databaseContext.PaymentMethods.Add(new PaymentMethod(method.Name));
+                }
+            }
         }
     }
 }

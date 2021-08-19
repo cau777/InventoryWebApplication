@@ -2,7 +2,7 @@
 @using InventoryWebApplication.Utils.Formatting
 @model dynamic
 @inject SettingsService _settingsService;
-@inject ProductsService _productsService;
+@inject DatabaseService<Product> _productsService;
 
 @{
     ViewBag.Title = "Sales Menu";
@@ -61,7 +61,7 @@
                         </thead>
 
                         <tbody id="searchModalTableBody">
-                        @foreach (Product product in _productsService.GetProducts().Where(o => o.AvailableQuantity > 0))
+                        @foreach (Product product in _productsService.GetAll().Where(o => o.AvailableQuantity > 0))
                         {
                             <tr>
                                 <td>
@@ -116,9 +116,9 @@
 <div class="card-deck">
     <div class="card card-fixed-width">
         <div class="card-body">
-            <h5 class="card-subtitle">Payment method</h5>
+            <h5 class="card-subtitle">Payment name</h5>
             <select id="paymentMethodInput" style="height: 30px">
-                @foreach (string paymentMethod in _settingsService.GetAvailablePaymentMethods())
+                @foreach (string paymentMethod in _settingsService.GetPaymentMethods())
                 {
                     <option value="@paymentMethod">@paymentMethod</option>
                 }
@@ -129,7 +129,7 @@
     <div class="card card-fixed-width">
         <div class="card-body">
             <h5 class="card-subtitle">Discount</h5>
-            <input id="discountInput" type="text"/>
+            <input id="discountInput" type="text" value="0"/>
         </div>
     </div>
 
@@ -205,7 +205,10 @@
             request.onloadend = function () {
                 clear()
                 canFinishSell = true;
-                if (request.status === 200) alert('Success');
+                if (request.status === 200) {
+                    alert('Success');
+                    redirectTo('/sales');
+                }
                 else alert('Could not complete sale. Error ' + status);
             }
             

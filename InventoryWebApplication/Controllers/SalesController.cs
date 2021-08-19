@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Controllers
 {
@@ -39,7 +36,7 @@ namespace InventoryWebApplication.Controllers
             double total = 0;
             foreach (ProductSale productSale in info.Products)
             {
-                Product product = await _productsService.FindProduct(productSale.Id);
+                Product product = await _productsService.GetById(productSale.Id);
                 if (product is null) return NotFound();
                 if (product.AvailableQuantity < productSale.Quantity) return BadRequest();
                 total += product.SellPrice * productSale.Quantity;

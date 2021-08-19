@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
-using Microsoft.Extensions.Configuration;
 using InventoryWebApplication.Models;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
@@ -13,126 +12,20 @@ using Microsoft.Extensions.Logging;
 
 namespace InventoryWebApplication.Services
 {
-    public class UsersService
+    public class UsersService : DatabaseService<User>
     {
-        public int UserCount => _databaseContext.Users.Count();
+        private static readonly Regex PasswordRegex = new("^\\w{4,}$", RegexOptions.Compiled);
+        private readonly ILogger<DatabaseService<User>> _logger;
 
-        private readonly ILogger<UsersService> _logger;
-        private readonly DatabaseContext _databaseContext;
-
-        public UsersService(DatabaseContext databaseContext, ILogger<UsersService> logger)
+        public UsersService(DatabaseContext databaseContext, ILogger<DatabaseService<User>> logger) : base(
+            databaseContext.Users, databaseContext, logger)
         {
-            _databaseContext = databaseContext;
             _logger = logger;
         }
         
-        [ItemCanBeNull]
-        public async Task<User> FindUserWithPassword(string username, string password)
+        public static bool IsPasswordValid(string password)
         {
-            string passwordHash = GetPasswordHashString(password);
-            string lowerUsername = username.ToLower();
-
-            // ReSharper disable once SpecifyStringComparison
-            User found = await _databaseContext.Users.FirstOrDefaultAsync(o =>
-                o.Name.ToLower() == lowerUsername &&
-                o.Password == passwordHash);
-            return found?.Clone();
-        }
-        
-        [ItemCanBeNull]
-        public async Task<User> FindUser(int id)
-        {
-            User user = await GetUser(id);
-
-            return user?.CloneHidePassword();
-        }
-        
-        public IEnumerable<User> GetUsers()
-        {
-            foreach (User user in _databaseContext.Users)
-            {
-                // Password is hidden
-                yield return new User
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Role = user.Role
-                };
-            }
-        }
-
-        public async Task<bool> AddUser(string username, string password, string role)
-        {
-            bool alreadyExists = await UserExists(username);
-            if (alreadyExists)
-            {
-                _logger.LogWarning($"Failed to add user {username}. Username already exists.");
-                return false;
-            }
-
-            string passwordHash = GetPasswordHashString(password);
-            User user = new()
-            {
-                Name = username,
-                Password = passwordHash,
-                Role = role
-            };
-
-            _databaseContext.Users.Add(user);
-            await _databaseContext.SaveChangesAsync();
-            
-            _logger.LogInformation($"Successfully added user {username} to the database.");
-            return true;
-        }
-        
-        public async Task<bool> UpdateUser(int id, string username, string role, string password = null)
-        {
-            User user = await GetUser(id);
-
-            if (user is null)
-            {
-                _logger.LogWarning($"Failed to update user {id}. User does not exist.");
-                return false;
-            }
-            
-            if (_databaseContext.Users.Where(o => o != user).Any(o => o.Name == username))
-            {
-                _logger.LogWarning($"Failed to update user {id}. Username already exists.");
-                return false;
-            }
-            
-            user.Name = username;
-            if (!string.IsNullOrWhiteSpace(password))
-                user.Password = GetPasswordHashString(password);
-            user.Role = role;
-            
-            await _databaseContext.SaveChangesAsync();
-            
-            _logger.LogInformation($"Successfully updated user {id}");
-            return true;
-        }
-
-        public async Task<bool> UserExists(string username)
-        {
-            string lowerUsername = username.ToLower();
-            return await _databaseContext.Users.AnyAsync(o => o.Name.ToLower() == lowerUsername);
-        }
-        
-        public async Task<bool> DeleteUser(int id, string ignoreUsername = "")
-        {
-            User user = await GetUser(id);
-
-            if (user is null || string.Equals(user.Name, ignoreUsername, StringComparison.OrdinalIgnoreCase))
-            {
-                _logger.LogWarning($"Failed to delete user {id}. User not found.");
-                return false;
-            }
-
-            _databaseContext.Users.Remove(user);
-            await _databaseContext.SaveChangesAsync();
-            
-            _logger.LogInformation($"Successfully removed user {id}");
-            return true;
+            return PasswordRegex.IsMatch(password);
         }
         
         private static string GetPasswordHashString(string password)
@@ -141,17 +34,67 @@ namespace InventoryWebApplication.Services
             byte[] passwordHash = SHA256.HashData(passwordBytes);
             return Encoding.UTF8.GetString(passwordHash);
         }
-        
+
         [ItemCanBeNull]
-        private async Task<User> GetUser(int id)
+        public async Task<User> FindUserWithPassword(string username, string password)
         {
-            return await _databaseContext.Users.FirstOrDefaultAsync(o => o.Id == id);
+            string passwordHash = GetPasswordHashString(password);
+            string lowerUsername = username.ToLower();
+
+            // ReSharper disable once SpecifyStringComparison
+            return await ItemSet.FirstOrDefaultAsync(o =>
+                o.Name.ToLower() == lowerUsername &&
+                o.Password == passwordHash);
         }
-        
-        [ItemCanBeNull]
-        private async Task<User> GetUser(string name)
+
+        public async Task<bool> Delete(int id, string ignoreUsername)
         {
-            return await _databaseContext.Users.FirstOrDefaultAsync(o => o.Name == name);
+            User element = await GetById(id);
+
+            if (element is null)
+            {
+                _logger.LogWarning($"Could not add item to table User. Id not found.");
+                return false;
+            }
+
+            if (string.Equals(element.Name, ignoreUsername, StringComparison.OrdinalIgnoreCase))
+            {
+                _logger.LogWarning("Could not update item on table User. User was ignored");
+                return false;
+            }
+
+            return await base.Delete(element);
+        }
+
+        public override Task<bool> Add(User element)
+        {
+            element.Password = GetPasswordHashString(element.Password);
+            return base.Add(element);
+        }
+
+        public override bool IsPresent(User element)
+        {
+            string lowerName = element.Name.ToLower();
+            return ItemSet.Any(o => lowerName == o.Name.ToLower());
+        }
+
+        protected override bool CanBeAdded(User element)
+        {
+            return !IsPresent(element);
+        }
+
+        protected override bool CanBeEdited(User target, User values)
+        {
+            string username = values.Name.ToLower();
+            return GetAll().All(o => o == target || o.Name.ToLower() != username);
+        }
+
+        protected override void SetValues(User target, User values)
+        {
+            target.Name = values.Name;
+            if (!string.IsNullOrWhiteSpace(values.Password))
+                target.Password = GetPasswordHashString(values.Password);
+            target.Role = values.Role;
         }
     }
 }

@@ -1,6 +1,6 @@
 @using InventoryWebApplication.Services
 @using InventoryWebApplication.Utils.Formatting
-@inject ProductsService _productsService
+@inject DatabaseService<Product> _productsService
 
 @{
     ViewBag.Title = "Products Management";
@@ -34,7 +34,7 @@
             <th>Sell Price</th>
         </tr>
 
-        @foreach (Product product in _productsService.GetProducts())
+        @foreach (Product product in _productsService.GetAll())
         {
             <tr>
                 <td>

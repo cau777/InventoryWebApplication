@@ -22,7 +22,7 @@ namespace InventoryWebApplication.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Method")
+                    b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -65,16 +65,21 @@ namespace InventoryWebApplication.Migrations
                     b.Property<string>("Discount")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("MethodId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("ProductsJson")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("SellTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<float>("TotalPrice")
+                    b.Property<double>("TotalPrice")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MethodId");
 
                     b.ToTable("Sales");
                 });
@@ -97,6 +102,15 @@ namespace InventoryWebApplication.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("InventoryWebApplication.Models.SaleInfo", b =>
+                {
+                    b.HasOne("InventoryWebApplication.Models.PaymentMethod", "Method")
+                        .WithMany()
+                        .HasForeignKey("MethodId");
+
+                    b.Navigation("Method");
                 });
 #pragma warning restore 612, 618
         }

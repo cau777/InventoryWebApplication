@@ -1,6 +1,6 @@
 ﻿@using InventoryWebApplication.Services
 @using InventoryWebApplication.Utils
-@inject UsersService _usersService
+@inject DatabaseService<User> _usersService
 
 @{
     ViewBag.Title = "Users Management";
@@ -26,7 +26,7 @@
             <th>Name</th>
             <th>Role</th>
         </tr>
-        @foreach (User user in _usersService.GetUsers().Where(o => o.Name != User.Claims.GetName()))
+        @foreach (User user in _usersService.GetAll().Where(o => o.Name != User.Claims.GetName()))
         {
             <tr>
                 <td>

@@ -1,7 +1,6 @@
 @using InventoryWebApplication.Services
-@using InventoryWebApplication.Utils.Formatting
 @model InventoryWebApplication.Operations.MessageIdOperation
-@inject UsersService _usersService
+@inject DatabaseService<User> _usersService
 
 @{
     ViewBag.Title = "Edit user";
@@ -10,7 +9,7 @@
 }
 
 @{
-    User user = await _usersService.FindUser(Model.Id);
+    User user = await _usersService.GetById(Model.Id);
 }
 
 @if (user is null)

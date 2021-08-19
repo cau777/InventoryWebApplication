@@ -17,6 +17,7 @@ namespace InventoryWebApplication.Models
         }
 
         public string ProductsJson { get; set; }
+        public PaymentMethod Method { get; set; }
         public DateTime SellTime { get; set; }
         public string Discount { get; set; }
         public double TotalPrice { get; set; }

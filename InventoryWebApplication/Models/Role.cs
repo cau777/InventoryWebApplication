@@ -17,6 +17,9 @@ namespace InventoryWebApplication.Models
         public const string StockManager = "stock-manager";
         public const string Seller = "seller";
 
+        public const string StockManagerAndAbove = HrManager + "," + StockManager;
+        public const string SellerAndAbove = HrManager + "," + StockManager + "," + Seller;
+
         public static string GetFormattedName(string role)
         {
             return role switch

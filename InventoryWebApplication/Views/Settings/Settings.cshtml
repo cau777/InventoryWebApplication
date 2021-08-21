@@ -1,6 +1,6 @@
 @using InventoryWebApplication.Services
 @model InventoryWebApplication.Operations.MessageOperation
-@inject SettingsService _settingsService
+@inject PaymentMethodsService _paymentMethodsService
 
 @{
     ViewBag.Title = "Settings";
@@ -8,16 +8,24 @@
     Layout = "_FormsLayout";
 }
 
-<form class="simple-form" accept-charset="UTF-8" method="post" asp-controller="Settings" asp-action="Settings">
+<form class="simple-form" accept-charset="UTF-8" method="post" asp-controller="Settings" asp-action="EditSettings">
     <h4>Sales</h4>
     <div class="form-body">
         <div class="form-field">
             <label class="form-label" for="paymentMethodsInput">
                 Payment Options: <br>
+                <span class="text-secondary">Format: Name, ProfitMargin%</span><br>
                 <span class="text-secondary">(One per line)</span>
             </label>
-            <textarea type="text" name="paymentNames" id="paymentMethodsInput" cols="22" rows="5">@_settingsService.GetPaymentMethods().Aggregate("", (s, s1) => s + "\n" + s1)</textarea>
+            <textarea type="text" name="paymentNames" id="paymentMethodsInput" cols="22" rows="5">@_paymentMethodsService.GetAll().Aggregate("", (s, m) => s + "\n" + m.Name + ", " + m.ProfitMarginPercentage + "%")</textarea>
         </div>
+    </div>
+
+    <div>
+        <button class="btn-secondary" type="submit">Save</button>
+        <a href="/">
+            <button class="btn-secondary" type="button">Discard</button>
+        </a>
     </div>
 </form>
 

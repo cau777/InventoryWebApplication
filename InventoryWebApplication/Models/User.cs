@@ -1,12 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Models
 {
-    public class User : IIdBasedModel
+    public class User : IIdBasedModel, INameBasedModel
     {
-        public int Id { get; set; }
+        public int Id { get; set; } 
         public string Name { get; set; }
-        public string Password { get; set; }
+        [MaxLength(32)] public string Password { get; set; }
         public string Role { get; set; }
 
         public User() { }

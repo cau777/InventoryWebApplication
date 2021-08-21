@@ -43,7 +43,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(role))
                 return View("AddUserForm", new MessageOperation("Role is required"));
 
-            if (_usersService.IsPresent(new User(name: username)))
+            if (await _usersService.GetByName(username) is null)
                 return View("AddUserForm", new MessageOperation("This user already exists"));
 
             if (!Role.AvailableRoles.Contains(role))
@@ -101,7 +101,7 @@ namespace InventoryWebApplication.Controllers
             if (!Role.AvailableRoles.Contains(role))
                 return View("EditUserForm", new MessageIdOperation("Invalid role", id));
 
-            bool result = await _usersService.Update(new User(id, username, password, role));
+            bool result = await _usersService.UpdateById(new User(id, username, password, role));
 
             return View("EditUserForm",
                 result

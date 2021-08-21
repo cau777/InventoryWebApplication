@@ -42,13 +42,14 @@ namespace InventoryWebApplication
 
             services.AddDbContext<DatabaseContext>(o =>
                 o.UseSqlite(Configuration["SQLiteConnection:SQLiteConnectionString"]));
+            
 
             services.AddTransient<DatabaseService<User>, UsersService>();
             services.AddTransient<DatabaseService<Product>, ProductsService>();
             
             services.AddTransient<UsersService>();
             services.AddTransient<ProductsService>();
-            services.AddTransient<SettingsService>();
+            services.AddTransient<PaymentMethodsService>();
             services.AddTransient<SalesService>();
 
             services.AddMvc(o =>

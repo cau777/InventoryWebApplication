@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace InventoryWebApplication.Services
 {
-    public class UsersService : DatabaseService<User>
+    public class UsersService : NameUniqueDatabaseService<User>
     {
         private static readonly Regex PasswordRegex = new("^\\w{4,}$", RegexOptions.Compiled);
         private readonly ILogger<DatabaseService<User>> _logger;
@@ -70,23 +69,6 @@ namespace InventoryWebApplication.Services
         {
             element.Password = GetPasswordHashString(element.Password);
             return base.Add(element);
-        }
-
-        public override bool IsPresent(User element)
-        {
-            string lowerName = element.Name.ToLower();
-            return ItemSet.Any(o => lowerName == o.Name.ToLower());
-        }
-
-        protected override bool CanBeAdded(User element)
-        {
-            return !IsPresent(element);
-        }
-
-        protected override bool CanBeEdited(User target, User values)
-        {
-            string username = values.Name.ToLower();
-            return GetAll().All(o => o == target || o.Name.ToLower() != username);
         }
 
         protected override void SetValues(User target, User values)

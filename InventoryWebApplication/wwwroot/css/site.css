@@ -150,6 +150,27 @@ div.alert-success {
     width: 150px !important;
 }
 
+.card-actions .card {
+    margin-bottom: 30px;
+}
+
+.charts-display {
+    display: flex;
+    flex-direction: column;
+}
+
+.pie-chart {
+    width: min(450px, 92vw);
+}
+
+.column-chart {
+    width: min(750px, 92vw);
+}
+
+.card-bottom-margin {
+    margin-bottom: 30px;
+}
+
 .btn-toolbar {
     margin-top: 5px;
     margin-bottom: 10px;
@@ -184,6 +205,7 @@ table tr td a {
 
 .card-fixed-width {
     max-width: 210px;
+    min-width: 12rem;
 }
 
 .card-fixed-width input {

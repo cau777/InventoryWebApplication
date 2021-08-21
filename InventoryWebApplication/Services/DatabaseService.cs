@@ -16,23 +16,22 @@ namespace InventoryWebApplication.Services
 
         protected readonly DbSet<T> ItemSet;
 
-        private readonly DatabaseContext _databaseContext;
         private readonly ILogger<DatabaseService<T>> _logger;
-        private readonly string _tableName;
+        protected readonly DatabaseContext DatabaseContext;
+        protected readonly string TableName;
 
         protected DatabaseService(DbSet<T> itemSet, DatabaseContext databaseContext, ILogger<DatabaseService<T>> logger)
         {
             ItemSet = itemSet;
-            _databaseContext = databaseContext;
+            DatabaseContext = databaseContext;
             _logger = logger;
-            _tableName = itemSet.EntityType.Name;
-            _tableName = _tableName[_tableName.LastIndexOf(".", StringComparison.Ordinal) ..];
+            TableName = itemSet.EntityType.Name;
+            TableName = TableName[(1 + TableName.LastIndexOf(".", StringComparison.Ordinal)) ..];
         }
-
-        public abstract bool IsPresent(T element);
-        protected abstract bool CanBeAdded(T element);
-        protected abstract bool CanBeEdited(T target, T values);
-        protected abstract void SetValues(T target, T values);
+        
+        protected abstract bool CanBeAdded([NotNull] T element);
+        protected abstract bool CanBeEdited([NotNull] T target, [NotNull] T values);
+        protected abstract void SetValues([NotNull] T target, [NotNull] T values);
 
         [ItemCanBeNull]
         public async Task<T> GetById(int id)
@@ -52,24 +51,22 @@ namespace InventoryWebApplication.Services
 
             if (!CanBeAdded(element))
             {
-                _logger.LogWarning($"Could not add item to table {_tableName}");
+                _logger.LogWarning($"Could not add item to table {TableName}");
                 return false;
             }
 
             ItemSet.Add(element);
-            await _databaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesAsync();
 
-            _logger.LogInformation($"Successfully added target to table {_tableName}");
+            _logger.LogInformation($"Successfully added target to table {TableName}");
             return true;
         }
-
-        public async Task<bool> Update(T values)
+        
+        public async Task<bool> Update(T target, T values)
         {
-            T target = await GetById(values.Id);
-
             if (target is null)
             {
-                _logger.LogWarning($"Could not update item on table {_tableName}. Element does not exist");
+                _logger.LogWarning($"Could not update item on table {TableName}. Element does not exist");
                 return false;
             }
 
@@ -77,28 +74,33 @@ namespace InventoryWebApplication.Services
 
             if (!CanBeEdited(target, values))
             {
-                _logger.LogWarning($"Could not update item on table {_tableName}. Element can't be edited");
+                _logger.LogWarning($"Could not update item on table {TableName}. Element can't be edited");
                 return false;
             }
 
-            await _databaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> UpdateById(T values)
+        {
+            return await Update(await GetById(values.Id), values);
+        }
+
+        public async Task<bool> DeleteById(int id)
         {
             T element = await GetById(id);
 
             if (element is not null) return await Delete(element);
 
-            _logger.LogWarning($"Could not delete item to table {_tableName}. Id not found");
+            _logger.LogWarning($"Could not delete item to table {TableName}. Id not found");
             return false;
         }
 
         public async Task<bool> Delete([NotNull] T element)
         {
             ItemSet.Remove(element);
-            await _databaseContext.SaveChangesAsync();
+            await DatabaseContext.SaveChangesAsync();
             return true;
         }
     }

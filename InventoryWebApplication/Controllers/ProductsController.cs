@@ -19,7 +19,7 @@ namespace InventoryWebApplication.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
+        [Authorize(Roles = Role.StockManagerAndAbove)]
         public IActionResult ListProducts()
         {
             return View();
@@ -27,7 +27,7 @@ namespace InventoryWebApplication.Controllers
 
         [HttpGet]
         [Route("add")]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
+        [Authorize(Roles = Role.StockManagerAndAbove)]
         public IActionResult AddProductForm()
         {
             return View(MessageOperation.Empty);
@@ -35,7 +35,7 @@ namespace InventoryWebApplication.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager + "," + Role.Seller)]
+        [Authorize(Roles = Role.StockManagerAndAbove + "," + Role.Seller)]
         public async Task<IActionResult> ProductById([FromRoute] int id)
         {
             Product product = await _productsService.GetById(id);
@@ -45,7 +45,7 @@ namespace InventoryWebApplication.Controllers
 
         [HttpPost]
         [Route("add")]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
+        [Authorize(Roles = Role.StockManagerAndAbove)]
         public async Task<IActionResult> AddProduct([FromForm] string name, [FromForm] string description,
             [FromForm] string availableQuantity, [FromForm] string cost, [FromForm] string sell)
         {
@@ -70,16 +70,16 @@ namespace InventoryWebApplication.Controllers
 
         [HttpDelete]
         [Route("delete/{id:int}")]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
+        [Authorize(Roles = Role.StockManagerAndAbove)]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
-            bool result = await _productsService.Delete(id);
+            bool result = await _productsService.DeleteById(id);
             return result ? Ok() : NotFound();
         }
 
         [HttpGet]
         [Route("edit/{id:int}")]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
+        [Authorize(Roles = Role.StockManagerAndAbove)]
         public IActionResult EditProductForm([FromRoute] int id)
         {
             return View(new MessageIdOperation(id));
@@ -87,7 +87,7 @@ namespace InventoryWebApplication.Controllers
 
         [HttpPost]
         [Route("edit/{id:int}")]
-        [Authorize(Roles = Role.HrManager + "," + Role.StockManager)]
+        [Authorize(Roles = Role.StockManagerAndAbove)]
         public async Task<IActionResult> EditProduct([FromRoute] int id, [FromForm] string name,
             [FromForm] string description, [FromForm] string availableQuantity, [FromForm] string cost,
             [FromForm] string sell)
@@ -104,7 +104,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return View("EditProductForm", new MessageIdOperation($"Invalid name: {name}", id));
 
-            bool result = await _productsService.Update(new Product(id, name, description, quantity, costPrice, sellPrice));
+            bool result = await _productsService.UpdateById(new Product(id, name, description, quantity, costPrice, sellPrice));
             return View("EditProductForm",
                 result
                     ? new MessageIdOperation("Changes saved", MessageSeverity.info, id)

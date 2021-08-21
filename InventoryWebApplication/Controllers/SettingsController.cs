@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services;
@@ -9,10 +12,11 @@ namespace InventoryWebApplication.Controllers
     [Route("settings")]
     public class SettingsController : Controller
     {
-        private readonly SettingsService _settingsService;
-        public SettingsController(SettingsService settingsService)
+        private readonly PaymentMethodsService _paymentMethodsService;
+
+        public SettingsController(PaymentMethodsService paymentMethodsService)
         {
-            _settingsService = settingsService;
+            _paymentMethodsService = paymentMethodsService;
         }
 
         [HttpGet]
@@ -24,8 +28,27 @@ namespace InventoryWebApplication.Controllers
 
         [HttpPost]
         [Authorize(Roles = Role.HrManager)]
-        public IActionResult EditSettings([FromForm] string paymentMethods)
+        public async Task<IActionResult> EditSettings([FromForm] string paymentNames)
         {
+            List<PaymentMethod> paymentMethods = new();
+            
+            foreach (string info in paymentNames.Split("\n").Select(o => o.Trim()))
+            {
+                if (info.Length == 0)
+                    continue;
+
+                string[] parts = info.Split(",", 2);
+                int margin = 100;
+                
+                if (parts.Length == 2)
+                {
+                    if (int.TryParse(parts[1].Replace("%", "").Trim(), out int converted)) margin = converted;
+                }
+
+                paymentMethods.Add(new PaymentMethod(parts[0].Trim(), margin));
+            }
+            await _paymentMethodsService.Set(paymentMethods);
+            
             return RedirectToAction("Settings", "Settings");
         }
     }

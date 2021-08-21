@@ -3,14 +3,16 @@ using System;
 using InventoryWebApplication.DatabaseContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InventoryWebApplication.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20210821120749_LimitedPasswordAndAddedProfitMargin")]
+    partial class LimitedPasswordAndAddedProfitMargin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +75,6 @@ namespace InventoryWebApplication.Migrations
 
                     b.Property<string>("ProductsJson")
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("Profit")
-                        .HasColumnType("REAL");
 
                     b.Property<DateTime>("SellTime")
                         .HasColumnType("TEXT");

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Models
 {
-    public class SaleInfo
+    public class SaleInfo : IIdBasedModel
     {
         public int Id { get; set; }
 
@@ -21,5 +23,6 @@ namespace InventoryWebApplication.Models
         public DateTime SellTime { get; set; }
         public string Discount { get; set; }
         public double TotalPrice { get; set; }
+        public double Profit { get; set; }
     }
 }

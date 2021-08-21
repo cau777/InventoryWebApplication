@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Models;
@@ -7,19 +7,17 @@ using Microsoft.Extensions.Logging;
 
 namespace InventoryWebApplication.Services
 {
-    public class ProductsService : DatabaseService<Product>
+    public class ProductsService : NameUniqueDatabaseService<Product>
     {
-        private readonly ILogger<DatabaseService<Product>> _logger;
         private readonly DatabaseContext _databaseContext;
 
         public ProductsService(DatabaseContext databaseContext, ILogger<DatabaseService<Product>> logger) : base(
             databaseContext.Products, databaseContext, logger)
         {
             _databaseContext = databaseContext;
-            _logger = logger;
         }
 
-        public async Task ShiftProductQuantity(int id, int shift)
+        public async Task ShiftProductQuantityById(int id, int shift)
         {
             Product product = await GetById(id);
             if (product is null) throw new NullReferenceException();
@@ -28,21 +26,11 @@ namespace InventoryWebApplication.Services
             await _databaseContext.SaveChangesAsync();
         }
 
-        public override bool IsPresent(Product element)
+        public async Task ShiftProductQuantity([NotNull] Product product, int shift)
         {
-            string lowerName = element.Name.ToLower();
-            return ItemSet.Any(o => lowerName == o.Name.ToLower());
-        }
-
-        protected override bool CanBeAdded(Product element)
-        {
-            return !IsPresent(element);
-        }
-
-        protected override bool CanBeEdited(Product target, Product values)
-        {
-            string lowerName = target.Name.ToLower();
-            return GetAll().All(o => o.Id == target.Id || o.Name.ToLower() != lowerName);
+            if (product.AvailableQuantity + shift < 0) throw new ArgumentException("Negative quantity");
+            product.AvailableQuantity += shift;
+            await _databaseContext.SaveChangesAsync();
         }
 
         protected override void SetValues(Product target, Product values)

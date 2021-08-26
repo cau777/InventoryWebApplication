@@ -1,4 +1,4 @@
-namespace InventoryWebApplication.Models
+namespace InventoryWebApplication.Models.Interfaces
 {
     public interface IIdBasedModel
     {

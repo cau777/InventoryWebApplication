@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Interfaces;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

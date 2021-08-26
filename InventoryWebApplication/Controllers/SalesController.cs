@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Services;
+using InventoryWebApplication.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -16,13 +17,15 @@ namespace InventoryWebApplication.Controllers
         private readonly ProductsService _productsService;
         private readonly SalesService _salesService;
         private readonly PaymentMethodsService _paymentMethodsService;
+        private readonly UsersService _usersService;
 
         public SalesController(ProductsService productsService, SalesService salesService,
-            PaymentMethodsService paymentMethodsService)
+            PaymentMethodsService paymentMethodsService, UsersService usersService)
         {
             _productsService = productsService;
             _salesService = salesService;
             _paymentMethodsService = paymentMethodsService;
+            _usersService = usersService;
         }
 
         [HttpGet]
@@ -77,6 +80,7 @@ namespace InventoryWebApplication.Controllers
             if (info.Method is null) return BadRequest();
             
             info.Profit = (info.TotalPrice - discount) * info.Method.ProfitMarginPercentage / 100d - cost;
+            info.Seller = await _usersService.GetByName(User.Claims.GetName());
 
             int index = 0;
             foreach (ProductSale productSale in info.Products)

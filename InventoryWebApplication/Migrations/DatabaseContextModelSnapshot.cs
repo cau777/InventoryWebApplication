@@ -80,12 +80,17 @@ namespace InventoryWebApplication.Migrations
                     b.Property<DateTime>("SellTime")
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("SellerId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<double>("TotalPrice")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
 
                     b.HasIndex("MethodId");
+
+                    b.HasIndex("SellerId");
 
                     b.ToTable("Sales");
                 });
@@ -117,7 +122,13 @@ namespace InventoryWebApplication.Migrations
                         .WithMany()
                         .HasForeignKey("MethodId");
 
+                    b.HasOne("InventoryWebApplication.Models.User", "Seller")
+                        .WithMany()
+                        .HasForeignKey("SellerId");
+
                     b.Navigation("Method");
+
+                    b.Navigation("Seller");
                 });
 #pragma warning restore 612, 618
         }

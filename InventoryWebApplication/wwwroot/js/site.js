@@ -60,3 +60,7 @@ function executeOnDoubleClick(doubleClickFunction) {
         }
     }
 }
+
+function clearValue(element) {
+    element.value = undefined;
+}

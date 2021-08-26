@@ -77,6 +77,10 @@ body {
     padding: 1px 2px;
 }
 
+.simple-form.bigger .form-label {
+    min-width: 150px;
+}
+
 .form-action {
     cursor: pointer;
     padding-bottom: 0;

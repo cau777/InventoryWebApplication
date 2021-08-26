@@ -1,4 +1,6 @@
-﻿namespace InventoryWebApplication.Models
+﻿using InventoryWebApplication.Models.Interfaces;
+
+namespace InventoryWebApplication.Models
 {
     public class Product : IIdBasedModel, INameBasedModel
     {

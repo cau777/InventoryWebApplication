@@ -11,7 +11,7 @@ namespace InventoryWebApplication.Controllers
     {
         [HttpGet]
         [Authorize(Roles = Role.StockManagerAndAbove)]
-        public IActionResult GeneralReports([FromQuery] StartEndDateTimeOperation startEnd)
+        public IActionResult GeneralReports([FromQuery] FilterOperation startEnd)
         {
             return View(startEnd);
         }

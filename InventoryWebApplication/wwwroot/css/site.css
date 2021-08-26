@@ -164,11 +164,21 @@ div.alert-success {
 }
 
 .pie-chart {
-    width: min(450px, 92vw);
+    width: 450px;
 }
 
 .column-chart {
-    width: min(750px, 92vw);
+    width: 750px;
+}
+
+.chart {
+    max-width: 92vw;
+}
+
+@media (min-width: 576px) {
+    .chart {
+        max-width: 80vw;
+    }
 }
 
 .card-bottom-margin {

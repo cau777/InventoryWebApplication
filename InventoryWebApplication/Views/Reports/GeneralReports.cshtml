@@ -19,14 +19,12 @@
 </h3>
 
 <div style="margin-bottom: 10px">
-    <button class="btn-group-toggle" type="button" data-toggle="collapse" data-target="#filters" aria-navigation="Toggle filters">Toggle filters</button>
+    <button class="btn-primary btn-group-toggle" type="button" data-toggle="collapse" data-target="#filters" aria-navigation="Toggle filters">Toggle filters</button>
 </div>
 
 <div style="margin-bottom: 15px">
     <div id="filters" class="collapse">
-        <span>
-            <b>Filters</b>
-        </span>
+        <b>Filters</b>
         <form class="simple-form bigger" asp-action="GeneralReports" asp-controller="Reports" method="get">
             <label class="form-label" for="startDateInput">Start Date (inclusive): </label>
             <input id="startDateInput" name="start" type="date" value="@(Model.Start == DateTime.MinValue ? "" : Model.Start.ToString("yyyy-MM-dd"))">

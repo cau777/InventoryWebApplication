@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
-using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Database;
 using Microsoft.Extensions.Logging;
 
-namespace InventoryWebApplication.Services
+namespace InventoryWebApplication.Services.Database
 {
     public class PaymentMethodsService : NameUniqueDatabaseService<PaymentMethod>
     {

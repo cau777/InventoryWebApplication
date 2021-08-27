@@ -1,0 +1,34 @@
+@using InventoryWebApplication.Services.Exporter
+@using InventoryWebApplication.Utils.Formatting
+@{
+    ViewBag.Title = "Export Menu";
+    ViewBag.PreviousPage = "";
+    Layout = "_Layout";
+}
+
+<h3>Export</h3>
+<form class="simple-form" asp-controller="Export" asp-action="ExportTable" method="get" target="_blank">
+    <div class="form-body">
+        <label class="form-label">Table</label>
+        <select id="tableSelect" name="name">
+            @foreach (string name in ExporterFactory.AvailableTables)
+            {
+                <option value="@name">@name.Capitalize()</option>
+            }
+        </select>
+        <br/>
+
+        <label class="form-label" for="modeSelect">Mode</label>
+        <select id="modeSelect" name="mode">
+            @foreach (string mode in ExporterFactory.Modes)
+            {
+                <option value="@mode">@mode.Capitalize()</option>
+            }
+        </select>
+    </div>
+
+    <button class="btn-secondary" type="submit">Export</button>
+    <a class="normal-text-link" asp-controller="Home" asp-action="Index">
+        <button class="btn-secondary" type="button">Back</button>
+    </a>
+</form>

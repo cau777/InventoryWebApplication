@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Database;
 using InventoryWebApplication.Operations;
-using InventoryWebApplication.Services;
+using InventoryWebApplication.Services.Database;
 using InventoryWebApplication.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

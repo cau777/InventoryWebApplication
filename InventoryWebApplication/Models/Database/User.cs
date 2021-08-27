@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using InventoryWebApplication.Models.Interfaces;
 using Newtonsoft.Json;
 
-namespace InventoryWebApplication.Models
+namespace InventoryWebApplication.Models.Database
 {
-    public class User : IIdBasedModel, INameBasedModel
+    public class User : IIdBasedModel, INameBasedModel, ITableRow
     {
-        public static readonly User Unknown = new(-1, "Unknown");
-        public int Id { get; set; } 
+        public int Id { get; set; }
         public string Name { get; set; }
         [MaxLength(32)] public string Password { get; set; }
         public string Role { get; set; }
@@ -25,6 +25,18 @@ namespace InventoryWebApplication.Models
         public override string ToString()
         {
             return JsonConvert.SerializeObject(this);
+        }
+
+        public string[] TableRowHeaders => new[] { "Id", "Name", "Role" };
+
+        public string[] ToTableRow()
+        {
+            return new[]
+            {
+                Id.ToString(CultureInfo.InvariantCulture),
+                Name,
+                Role
+            };
         }
     }
 }

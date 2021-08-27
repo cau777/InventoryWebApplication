@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
 using InventoryWebApplication.Models;
-using InventoryWebApplication.Services;
+using InventoryWebApplication.Models.Database;
+using InventoryWebApplication.Services.Database;
 using InventoryWebApplication.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Controllers
 {

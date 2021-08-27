@@ -1,5 +1,4 @@
-﻿
-using InventoryWebApplication.Models;
+﻿using InventoryWebApplication.Models.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryWebApplication.DatabaseContexts

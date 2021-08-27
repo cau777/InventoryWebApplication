@@ -1,12 +1,11 @@
-using System;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Operations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Controllers
 {
+    [Route("reports")]
     public class ReportsController : Controller
     {
         [HttpGet]

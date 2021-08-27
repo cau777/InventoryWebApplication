@@ -1,5 +1,6 @@
 ﻿@using InventoryWebApplication.Utils
-@inject InventoryWebApplication.Services.UsersService _usersService
+@using InventoryWebApplication.Services.Database
+@inject UsersService _usersService
 @{
     ViewBag.Title = "Home";
     ViewBag.PreviousPage = "";
@@ -81,6 +82,18 @@
                     <div class="card-body">
                         <h5 class="card-title text-dark">Settings</h5>
                         <span class="card-img" uk-icon="icon: settings; ratio: 7.5"></span>
+                    </div>
+                </div>
+            </a>
+        }
+        
+        @if (User.HasAccessTo(Role.StockManager))
+        {
+            <a class="normal-text-link" asp-controller="Export" asp-action="ExportMenu">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">Export Menu</h5>
+                        <span class="card-img" uk-icon="icon: download; ratio: 7.5"></span>
                     </div>
                 </div>
             </a>

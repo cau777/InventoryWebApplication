@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Database;
 using InventoryWebApplication.Operations;
-using InventoryWebApplication.Services;
+using InventoryWebApplication.Services.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -26,21 +25,8 @@ namespace InventoryWebApplication.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("auth")]
-        public async Task<IActionResult> Authenticate([FromForm] Dictionary<string, string> model)
+        public async Task<IActionResult> Authenticate([FromForm] string username, [FromForm] string password)
         {
-            string username;
-            string password;
-
-            try
-            {
-                username = model["username"];
-                password = model["password"];
-            }
-            catch (KeyNotFoundException)
-            {
-                return RedirectToFailedLogin();
-            }
-
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return RedirectToFailedLogin();
 
@@ -59,7 +45,7 @@ namespace InventoryWebApplication.Controllers
             });
             
             await HttpContext.SignInAsync(claimsPrincipal);
-
+            
             return RedirectToAction("Index", "Home");
         }
 

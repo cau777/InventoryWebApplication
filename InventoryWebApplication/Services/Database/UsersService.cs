@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Text;
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
-using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Database;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace InventoryWebApplication.Services
+namespace InventoryWebApplication.Services.Database
 {
     public class UsersService : NameUniqueDatabaseService<User>
     {

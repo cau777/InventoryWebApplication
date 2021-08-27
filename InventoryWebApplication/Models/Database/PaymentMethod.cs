@@ -1,8 +1,9 @@
+using System.Globalization;
 using InventoryWebApplication.Models.Interfaces;
 
-namespace InventoryWebApplication.Models
+namespace InventoryWebApplication.Models.Database
 {
-    public class PaymentMethod : IIdBasedModel, INameBasedModel
+    public class PaymentMethod : IIdBasedModel, INameBasedModel, ITableRow
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -19,6 +20,17 @@ namespace InventoryWebApplication.Models
         public double CalcMargin(double price)
         {
             return ProfitMarginPercentage / 100d * price;
+        }
+
+        public string[] TableRowHeaders => new[] { "Id", "Name", "Profit Margin (%)" };
+        public string[] ToTableRow()
+        {
+            return new[]
+            {
+                Id.ToString(CultureInfo.InvariantCulture),
+                Name,
+                ProfitMarginPercentage.ToString(CultureInfo.InvariantCulture)
+            };
         }
     }
 }

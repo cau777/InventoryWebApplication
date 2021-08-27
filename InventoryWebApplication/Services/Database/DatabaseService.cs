@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
-using InventoryWebApplication.Models;
 using InventoryWebApplication.Models.Interfaces;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace InventoryWebApplication.Services
+namespace InventoryWebApplication.Services.Database
 {
     public abstract class DatabaseService<T> where T : class, IIdBasedModel
     {
@@ -41,7 +40,7 @@ namespace InventoryWebApplication.Services
         }
 
         [ItemNotNull]
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             return ItemSet;
         }

@@ -1,8 +1,9 @@
 using System;
 using InventoryWebApplication.Attributes;
 using InventoryWebApplication.DatabaseContexts;
-using InventoryWebApplication.Models;
-using InventoryWebApplication.Services;
+using InventoryWebApplication.Models.Database;
+using InventoryWebApplication.Services.Database;
+using InventoryWebApplication.Services.Exporter;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,12 +46,16 @@ namespace InventoryWebApplication
             
 
             services.AddTransient<DatabaseService<User>, UsersService>();
+            services.AddTransient<DatabaseService<SaleInfo>, SalesService>();
             services.AddTransient<DatabaseService<Product>, ProductsService>();
+            services.AddTransient<DatabaseService<PaymentMethod>, PaymentMethodsService>();
             
             services.AddTransient<UsersService>();
+            services.AddTransient<SalesService>();
             services.AddTransient<ProductsService>();
             services.AddTransient<PaymentMethodsService>();
-            services.AddTransient<SalesService>();
+
+            services.AddTransient<ExporterFactory>();
 
             services.AddMvc(o =>
             {

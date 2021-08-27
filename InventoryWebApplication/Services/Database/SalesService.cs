@@ -1,19 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
-using InventoryWebApplication.Models;
+using InventoryWebApplication.Models.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace InventoryWebApplication.Services
+namespace InventoryWebApplication.Services.Database
 {
     public class SalesService : DatabaseService<SaleInfo>
     {
         public SalesService(DatabaseContext databaseContext, ILogger<DatabaseService<SaleInfo>> logger)
             : base(databaseContext.Sales, databaseContext, logger) { }
+
+        public override IEnumerable<SaleInfo> GetAll()
+        {
+            return ItemSet.Include(o => o.Method).Include(o => o.Seller);
+        }
 
         public async Task<SaleInfo[]> GetSales(DateTime start, DateTime end,
             List<string> usernames = null)
@@ -30,7 +34,7 @@ namespace InventoryWebApplication.Services
             {
                 string first = usernames[0];
                 filteredByUsers = all.Where(o => o.Seller.Name == first);
-                
+
                 for (int index = 1; index < usernames.Count; index++)
                 {
                     string username = usernames[index];

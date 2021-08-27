@@ -1,13 +1,12 @@
-using InventoryWebApplication.DatabaseContexts;
-using InventoryWebApplication.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading.Tasks;
+using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Models.Interfaces;
 using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
-namespace InventoryWebApplication.Services
+namespace InventoryWebApplication.Services.Database
 {
     public abstract class NameUniqueDatabaseService<T> : DatabaseService<T>
         where T : class, IIdBasedModel, INameBasedModel

@@ -44,7 +44,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(role))
                 return View("AddUserForm", new MessageOperation("Role is required"));
 
-            if (await _usersService.GetByName(username) is null)
+            if (await _usersService.GetByName(username) is not null)
                 return View("AddUserForm", new MessageOperation("This user already exists"));
 
             if (!Role.AvailableRoles.Contains(role))

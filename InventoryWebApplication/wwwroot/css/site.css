@@ -247,3 +247,12 @@ div .display-horizontal {
     margin-right: 2px;
     margin-left: 2px;
 }
+
+span.delete-list-item {
+    color: gray;
+}
+
+span.delete-list-item:hover {
+    color: darkred;
+    cursor: pointer;
+}

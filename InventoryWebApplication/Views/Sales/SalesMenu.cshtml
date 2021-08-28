@@ -97,6 +97,7 @@
             <col span="1" style="width: 10%"/>
             <col span="1" style="width: 70%"/>
             <col span="1" style="width: 10%"/>
+            <col span="1" style="width: 0.4rem"/>
         </colgroup>
 
         <thead>
@@ -105,6 +106,7 @@
             <th>Quant.</th>
             <th>Name</th>
             <th>Price</th>
+            <th></th>
         </tr>
         </thead>
 
@@ -349,7 +351,6 @@
                         cellQuantity.appendChild(input);
                     }
                     
-                    // cellQuantity.ondblclick = clickFunction;
                     cellQuantity.onclick = () => executeOnDoubleClick(clickFunction);
                     
                     let cellName = document.createElement('td');
@@ -358,10 +359,23 @@
                     let cellPrice = document.createElement('td');
                     cellPrice.innerHTML = product.sellPrice;
                     
+                    let cellDelete = document.createElement('td');
+                    let deleteSpan = document.createElement('span');
+                    deleteSpan.setAttribute('class', 'delete-list-item');
+                    
+                    deleteSpan.innerHTML = 'x';
+                    deleteSpan.onclick = function() {
+                        productsTableBody.removeChild(row);
+                        updateTotalPrice();
+                    }
+                    
+                    cellDelete.appendChild(deleteSpan);
+                    
                     row.appendChild(cellId);
                     row.appendChild(cellQuantity);
                     row.appendChild(cellName);
                     row.appendChild(cellPrice);
+                    row.appendChild(cellDelete);
                     productsTableBody.appendChild(row);
                     updateTotalPrice();
                 };

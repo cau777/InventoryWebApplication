@@ -57,8 +57,10 @@
                         </colgroup>
 
                         <thead>
-                        <th>Name</th>
-                        <th>Description</th>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                        </tr>
                         </thead>
 
                         <tbody id="searchModalTableBody">
@@ -156,7 +158,6 @@
     <script>
         const idInput = document.getElementById('idInput');
         const btnClear = document.getElementById('btnClear');
-        const productsTable = document.getElementById('productsTable');
         const btnAddProduct = document.getElementById('btnAddProduct');
         const btnFinish = document.getElementById('btnFinish');
         const quantityInput = document.getElementById('quantityInput');
@@ -164,45 +165,48 @@
         const paymentMethodInput = document.getElementById('paymentMethodInput');
         const totalPriceInput = document.getElementById('totalPriceInput');
         const searchModalInput = document.getElementById('searchModalInput');
-        const searchModalTable = document.getElementById('searchModalTable');
         const searchModalClose = document.getElementById('searchModalClose');
         const productsTableBody = document.getElementById('productsTableBody');
         const searchModalTableBody = document.getElementById('searchModalTableBody');
         let canFinishSell = true;
-        
+
         btnAddProduct.onclick = () => addProduct(idInput.value, quantityInput.value);
         btnClear.onclick = clear;
-        
+
         idInput.oninput = () => restrictValues(idInput, 1, @int.MaxValue);
         quantityInput.oninput = () => restrictValues(quantityInput, 1, @int.MaxValue);
-        
+
         discountInput.onchange = () => restrictDiscountAndThen(discountInput, @int.MinValue, @int.MaxValue, updateTotalPrice);
-        searchModalInput.oninput = function() {
-            let query = searchModalInput.value.trim().toLowerCase();
-            
-            for (let tableBodyElement of searchModalTableBody.children) {
+        searchModalInput.oninput = function () {
+            const query = searchModalInput.value.trim().toLowerCase();
+
+            for (const tableBodyElement of searchModalTableBody.children) {
                 if (tableBodyElement.tagName.toLowerCase() === 'tr') {
-                  let cellName = tableBodyElement.children[0].children[0].getAttribute('data-name');
-                  tableBodyElement.hidden = !cellName.includes(query);
+                    const cellName = tableBodyElement.children[0].children[0].getAttribute('data-name');
+                    tableBodyElement.hidden = !cellName.includes(query);
                 }
             }
         };
-        btnFinish.onclick = function() {
+        btnFinish.onclick = function () {
             if (!canFinishSell) return;
-            
-            let products = [];
-            for (let productsTableElement of productsTableBody.children) {
-                let idCell = productsTableElement.children[0];
-                let quantityCell = productsTableElement.children[1];
-                products.push({ Id: Number(idCell.innerHTML), Quantity: Number(quantityCell.innerHTML) });
+
+            const products = [];
+            for (const productsTableElement of productsTableBody.children) {
+                const idCell = productsTableElement.children[0];
+                const quantityCell = productsTableElement.children[1];
+                products.push({Id: Number(idCell.innerHTML), Quantity: Number(quantityCell.innerHTML)});
             }
-            
+
             if (products.length === 0) return;
-            
-            let saleInfo = { products: products, discount: discountInput.value, method: { Id: Number(paymentMethodInput.value), Name: "" }, };
-            let request = new XMLHttpRequest();
-            let json = JSON.stringify(saleInfo)
-            
+
+            const saleInfo = {
+                products: products,
+                discount: discountInput.value,
+                method: {Id: Number(paymentMethodInput.value), Name: ""},
+            };
+            const request = new XMLHttpRequest();
+            const json = JSON.stringify(saleInfo);
+
             request.open('POST', '/sales/sell', true);
             request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             canFinishSell = false;
@@ -212,31 +216,23 @@
                 if (request.status === 200) {
                     alert('Success');
                     redirectTo('/sales');
-                }
-                else alert('Could not complete sale. Error ' + status);
+                } else alert('Could not complete sale. Error ' + status);
             }
-            
+
             request.send(json);
         }
-        
-        $('.table-select-id').click(function() {
+
+        $('.table-select-id').click(function () {
             idInput.value = this.getAttribute('data-id');
             searchModalClose.click();
         });
-        
+
         function restrictValues(input, minValue, maxValue) {
-            let value = input.value.trim();
+            const value = String(input.value).trim();
             if (String(value) === "") return;
             input.value = clamp(value, minValue, maxValue);
         }
-        
-        function restrictValuesAndThen(input, minValue, maxValue, then) {
-            let value = input.value.trim();
-            if (String(value) === "") return;
-            input.value = clamp(value, minValue, maxValue);
-            then();
-        }
-        
+
         function restrictDiscountAndThen(input, minValue, maxValue, then) {
             let value = String(input.value.trim());
             if (value === "") return;
@@ -246,131 +242,131 @@
             } else {
                 input.value = String(clamp(Number.parseFloat(value), minValue, maxValue));
             }
-            
+
             then();
         }
-        
-        function clear(){
+
+        function clear() {
             productsTableBody.innerHTML = '';
             updateTotalPrice();
         }
-        
+
         function findRowInTable(id) {
-            for (let tableElement of productsTableBody.children) {
-                if(tableElement.tagName.toLowerCase() === 'tr') {
-                    let idCell = tableElement.children[0];
+            for (const tableElement of productsTableBody.children) {
+                if (tableElement.tagName.toLowerCase() === 'tr') {
+                    const idCell = tableElement.children[0];
                     if (idCell.innerHTML === id) {
-                        return tableElement;    
+                        return tableElement;
                     }
                 }
             }
             return undefined;
         }
-        
+
         function calcDiscount(totalPrice) {
+            const discountValue = Number.parseFloat(discountString);
             let discountString = discountInput.value;
-            if (discountString.search('%') !== -1){
+            if (discountString.search('%') !== -1) {
                 discountString = discountString.replace('%', '');
                 let discountValue = Number.parseFloat(discountString);
-                
+
                 if (!isNaN(discountValue))
-                return totalPrice * discountValue / 100;
+                    return totalPrice * discountValue / 100;
             } else {
-                let discountValue = Number.parseFloat(discountString);
-                
+
                 if (!isNaN(discountValue))
-                return discountValue;
+                    return discountValue;
             }
             return 0;
         }
-        
+
         function calcTotalPrice() {
             let totalPrice = 0;
-            for (let tableElement of productsTableBody.children) {
-                if(tableElement.tagName.toLowerCase() === 'tr') {
-                    let quantityCell = tableElement.children[1];
-                    let priceCell = tableElement.children[3];
+            for (const tableElement of productsTableBody.children) {
+                if (tableElement.tagName.toLowerCase() === 'tr') {
+                    const quantityCell = tableElement.children[1];
+                    const priceCell = tableElement.children[3];
                     totalPrice += Number(priceCell.innerHTML) * Number(quantityCell.innerHTML);
                 }
             }
             return totalPrice;
         }
-        
+
         function updateTotalPrice() {
             let totalPrice = calcTotalPrice();
             totalPrice = clamp(totalPrice - calcDiscount(totalPrice), 0, @int.MaxValue);
-            
+
             totalPriceInput.value = totalPriceInput.getAttribute('data-currency') + String(roundTo(totalPrice, 2));
         }
-        
+
         function addProduct(id, quantity) {
-            let idRowInTable = findRowInTable(id);
-            let request = getProductRequest(id);
-            
+            const idRowInTable = findRowInTable(id);
+            const request = getProductRequest(id);
+
             if (idRowInTable === undefined) {
-                request.onloadend = function() {
+                request.onloadend = function () {
                     if (request.status !== 200) {
-                      alert("Could not add product. Id " + id + " not Found.");
-                      return;
+                        alert("Could not add product. Id " + id + " not Found.");
+                        return;
                     }
-                    
-                    let product = request.response;
+
+                    const product = request.response;
                     if (product.availableQuantity < quantity) {
-                      alert("Could not add product. Only " + product.availableQuantity + " items available.");
-                      return;
+                        alert("Could not add product. Only " + product.availableQuantity + " items available.");
+                        return;
                     }
-                    
-                    let row = document.createElement('tr');
-                    let cellId = document.createElement('td');
+
+                    const row = document.createElement('tr');
+                    const cellId = document.createElement('td');
                     cellId.innerHTML = id;
-                    
-                    let cellQuantity = document.createElement('td');
+
+                    const cellQuantity = document.createElement('td');
                     cellQuantity.innerHTML = quantity;
-                    let clickFunction = function () {
+                    const clickFunction = function () {
                         console.log('click');
-                        let prev = cellQuantity.innerHTML;
+                        const prev = cellQuantity.innerHTML;
                         cellQuantity.innerHTML = '';
-                        
-                        let input = document.createElement('input');
+
+                        const input = document.createElement('input');
                         input.value = prev;
                         input.style.width = '5rem';
                         input.type = 'number';
-                        
-                        input.onchange = function() {
-                            let request = getProductRequest(id);
-                            request.onloadend = function() {
-                                let product = request.response;
-                                let availableQuantity = product.availableQuantity;
+
+                        input.onchange = function () {
+                            const request = getProductRequest(id);
+                            request.onloadend = function () {
+                                const product = request.response;
+                                const availableQuantity = product.availableQuantity;
                                 restrictValues(input, 1, availableQuantity);
-                                
+
                                 cellQuantity.innerHTML = input.value;
                                 updateTotalPrice();
                             }
                         }
-                        
+
                         cellQuantity.appendChild(input);
-                    }
-                    
+                    };
+
                     cellQuantity.onclick = () => executeOnDoubleClick(clickFunction);
-                    
-                    let cellName = document.createElement('td');
+
+                    const cellName = document.createElement('td');
                     cellName.innerHTML = product.name;
-                    
-                    let cellPrice = document.createElement('td');
+
+                    const cellPrice = document.createElement('td');
                     cellPrice.innerHTML = product.sellPrice;
-                    
-                    let cellDelete = document.createElement('td');
-                    let deleteSpan = document.createElement('span');
+
+                    const cellDelete = document.createElement('td');
+                    const deleteSpan = document.createElement('span');
                     deleteSpan.setAttribute('class', 'delete-list-item');
-                    
+
                     deleteSpan.innerHTML = 'x';
-                    deleteSpan.onclick = function() {
+                    deleteSpan.onclick = function () {
                         productsTableBody.removeChild(row);
                         updateTotalPrice();
                     }
-                    
+
                     cellDelete.appendChild(deleteSpan);
-                    
+
                     row.appendChild(cellId);
                     row.appendChild(cellQuantity);
                     row.appendChild(cellName);
@@ -380,10 +376,10 @@
                     updateTotalPrice();
                 };
             } else {
-                request.onloadend = function() {
-                    let product = request.response;
-                    let cellQuantity = idRowInTable.children[1];
-                    let newQuantity = Number(cellQuantity.innerHTML) + Number(quantity);
+                request.onloadend = function () {
+                    const product = request.response;
+                    const cellQuantity = idRowInTable.children[1];
+                    const newQuantity = Number(cellQuantity.innerHTML) + Number(quantity);
                     if (product.availableQuantity < newQuantity) {
                         alert("Could not add product. Only " + product.availableQuantity + " items available.");
                         return;
@@ -393,7 +389,7 @@
                 }
             }
         }
-        
+
         updateTotalPrice();
     </script>
 }

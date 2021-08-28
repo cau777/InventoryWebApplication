@@ -264,8 +264,8 @@
         }
 
         function calcDiscount(totalPrice) {
-            const discountValue = Number.parseFloat(discountString);
             let discountString = discountInput.value;
+            const discountValue = Number.parseFloat(discountString);
             if (discountString.search('%') !== -1) {
                 discountString = discountString.replace('%', '');
                 let discountValue = Number.parseFloat(discountString);

@@ -249,7 +249,7 @@ div .display-horizontal {
 }
 
 span.delete-list-item {
-    color: gray;
+    color: #9f9f9f;
 }
 
 span.delete-list-item:hover {

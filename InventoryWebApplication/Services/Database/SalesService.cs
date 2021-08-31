@@ -125,6 +125,12 @@ namespace InventoryWebApplication.Services.Database
                 dict[value] = prev + sale.Profit;
             }
 
+            // Avoid negative numbers
+            foreach ((string key, double value) in dict)
+            {
+                dict[key] = Math.Max(0, value);
+            }
+
             return dict;
         }
 
@@ -144,7 +150,8 @@ namespace InventoryWebApplication.Services.Database
             Dictionary<DateTime, (double, double)> dict = new();
 
             // All dates between start and end are added
-            for (DateTime i = start.Date; i <= end.Date; i = i.AddDays(1)) dict.Add(i.Date, (0, 0));
+            for (DateTime i = start.Date; i <= end.Date; i = i.AddDays(1)) 
+                dict.Add(i.Date, (0, 0));
 
             foreach (SaleInfo info in sales)
             {

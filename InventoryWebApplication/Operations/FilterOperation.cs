@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace InventoryWebApplication.Operations
 {
+    /// <summary>
+    /// Contains parameters used to filter SaleInfos in a view
+    /// </summary>
     public class FilterOperation
     {
         public DateTime Start { get; set; }

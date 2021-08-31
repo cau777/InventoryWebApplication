@@ -23,7 +23,7 @@ namespace InventoryWebApplication.Controllers
         public IActionResult ExportTable([FromQuery] string name, [FromQuery] string mode)
         {
             ExporterService exporter = _exporterFactory.GetInstance(name, mode);
-            return File(exporter.Export(), exporter.FileType, exporter.FileName);
+            return File(exporter.Export(), exporter.ContentType, exporter.FileName);
         }
     }
 }

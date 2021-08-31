@@ -21,24 +21,35 @@ namespace InventoryWebApplication.Services.Database
         {
             _logger = logger;
         }
-        
-        public static bool IsPasswordValid(string password)
+
+        /// <summary>
+        /// Checks whether the password is valid
+        /// </summary>
+        /// <param name="password">The password to be checked</param>
+        /// <returns>True if the password is valid</returns>
+        public static bool IsPasswordValid([NotNull] string password)
         {
             return PasswordRegex.IsMatch(password);
         }
-        
-        private static string GetPasswordHashString(string password)
+
+        private static string GetPasswordHashString([NotNull] string password)
         {
             byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
             byte[] passwordHash = SHA256.HashData(passwordBytes);
             return Encoding.UTF8.GetString(passwordHash);
         }
 
+        /// <summary>
+        /// Gets a User with the specified name and password
+        /// </summary>
+        /// <param name="name">Name of the user to find</param>
+        /// <param name="password">Password of the user to find</param>
+        /// <returns>Element with the provided name and password or null if not found</returns>
         [ItemCanBeNull]
-        public async Task<User> FindUserWithPassword(string username, string password)
+        public async Task<User> GetByNameAndPassword([NotNull] string name, [NotNull] string password)
         {
             string passwordHash = GetPasswordHashString(password);
-            string lowerUsername = username.ToLower();
+            string lowerUsername = name.ToLower();
 
             // ReSharper disable once SpecifyStringComparison
             return await ItemSet.FirstOrDefaultAsync(o =>
@@ -46,7 +57,13 @@ namespace InventoryWebApplication.Services.Database
                 o.Password == passwordHash);
         }
 
-        public async Task<bool> Delete(int id, string ignoreUsername)
+        /// <summary>
+        /// Deletes an element of the table, ignoring a name. This is used to prevent a User from deleting itself
+        /// </summary>
+        /// <param name="id">Id of the element to delete</param>
+        /// <param name="ignoreName">Name to ignore</param>
+        /// <returns>True if the element was found and deleted</returns>
+        public async Task<bool> Delete(int id, string ignoreName)
         {
             User element = await GetById(id);
 
@@ -56,13 +73,14 @@ namespace InventoryWebApplication.Services.Database
                 return false;
             }
 
-            if (string.Equals(element.Name, ignoreUsername, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(element.Name, ignoreName, StringComparison.OrdinalIgnoreCase))
             {
                 _logger.LogWarning("Could not update item on table User. User was ignored");
                 return false;
             }
 
-            return await base.Delete(element);
+            await base.Delete(element);
+            return true;
         }
 
         public override Task<bool> Add(User element)

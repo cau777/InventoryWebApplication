@@ -11,6 +11,7 @@ namespace InventoryWebApplication.Models.Database
     {
         public int Id { get; set; }
 
+        // Products are stored in Json format
         [NotMapped]
         public List<ProductSale> Products
         {

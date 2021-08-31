@@ -17,15 +17,12 @@ namespace InventoryWebApplication.Services.Database
             _databaseContext = databaseContext;
         }
 
-        public async Task ShiftProductQuantityById(int id, int shift)
-        {
-            Product product = await GetById(id);
-            if (product is null) throw new NullReferenceException();
-            if (product.AvailableQuantity + shift < 0) throw new ArgumentException("Negative quantity");
-            product.AvailableQuantity += shift;
-            await _databaseContext.SaveChangesAsync();
-        }
-
+        /// <summary>
+        /// Adds a number to the available quantity of a product
+        /// </summary>
+        /// <param name="product">Product to be updated</param>
+        /// <param name="shift">Number to add</param>
+        /// <exception cref="ArgumentException">The result of the operation would be negative</exception>
         public async Task ShiftProductQuantity([NotNull] Product product, int shift)
         {
             if (product.AvailableQuantity + shift < 0) throw new ArgumentException("Negative quantity");

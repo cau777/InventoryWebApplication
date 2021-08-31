@@ -105,7 +105,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(name))
                 return View("EditProductForm", new MessageIdOperation($"Invalid name: {name}", id));
 
-            bool result = await _productsService.UpdateById(new Product(id, name, description, quantity, costPrice, sellPrice));
+            bool result = await _productsService.UpdateById(id, new Product(id, name, description, quantity, costPrice, sellPrice));
             return View("EditProductForm",
                 result
                     ? new MessageIdOperation("Changes saved", MessageSeverity.info, id)

@@ -149,21 +149,21 @@
                 // Payment Methods
                 function() {
                     let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales Count", _salesService.GetSalesCountPerProp(sales, o => o.Method.Name), o => o, o => o.ToString()))
+                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales Count", _salesService.CountSalesPerProperty(sales, o => o.Method.Name), o => o, o => o.ToString()))
                     ]);
                     finishPieChart(paymentMethodsCountPieChart, data,  'Payment methods / Sales number');
                 },
                 
                 function() {
                     let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales", _salesService.GetSalesPerProp(sales, o => o.Method.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
+                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales", _salesService.SumSalesPerProperty(sales, o => o.Method.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
                     ]);
                     finishPieChart(paymentMethodsTotalPieChart, data,  'Payment methods / Sales');
                 },
                 
                 function() {
                     let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Method", "Profit", _salesService.GetSalesProfitPerProp(sales, o => o.Method.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
+                        @Html.Raw(JsUtils.BuildChartData("Method", "Profit", _salesService.SumSalesProfitPerProperty(sales, o => o.Method.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
                     ]);
                     finishPieChart(paymentMethodsProfitPieChart, data,  'Payment methods / Profit');
                 },
@@ -171,21 +171,21 @@
                 // Employees
                 function() {
                     let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales Count", _salesService.GetSalesCountPerProp(sales, o => o.Seller.Name), o => o, o => o.ToString()))
+                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales Count", _salesService.CountSalesPerProperty(sales, o => o.Seller.Name), o => o, o => o.ToString()))
                     ]);
                     finishPieChart(employeesCountPieChart, data,  'Employee / Sales number');
                 },
                 
                 function() {
                     let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales", _salesService.GetSalesPerProp(sales, o => o.Seller.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
+                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales", _salesService.SumSalesPerProperty(sales, o => o.Seller.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
                     ]);
                     finishPieChart(employeesTotalPieChart, data,  'Employee / Sales');
                 },
                 
                 function() {
                     let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Employee", "Profit", _salesService.GetSalesProfitPerProp(sales, o => o.Seller.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
+                        @Html.Raw(JsUtils.BuildChartData("Employee", "Profit", _salesService.SumSalesProfitPerProperty(sales, o => o.Seller.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
                     ]);
                     finishPieChart(employeesProfitPieChart, data,  'Employee / Profit');
                 },

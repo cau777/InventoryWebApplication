@@ -8,7 +8,7 @@ namespace InventoryWebApplication.Services.Exporter
 {
     public class JsonExporter<T> : ExporterService where T : class, IIdBasedModel, ITableRow
     {
-        public override string FileType => "application/json";
+        public override string ContentType => "application/json";
         public override string FileExtension => "json";
 
         private readonly DatabaseService<T> _databaseService;

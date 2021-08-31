@@ -3,6 +3,9 @@ using InventoryWebApplication.Models.Interfaces;
 
 namespace InventoryWebApplication.Models.Database
 {
+    /// <summary>
+    /// Stores information about a product available for sale
+    /// </summary>
     public class Product : IIdBasedModel, INameBasedModel, ITableRow
     {
         public int Id { get; set; }

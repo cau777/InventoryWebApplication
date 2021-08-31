@@ -12,7 +12,7 @@ namespace InventoryWebApplication.Services.Exporter
         public static readonly IEnumerable<string> AvailableTables = new[]
             { "products", "users", "sales", "payment methods" };
 
-        public static readonly IEnumerable<string> Modes = new[] { "json", "csv" };
+        public static readonly IEnumerable<string> AvailableModes = new[] { "json", "csv" };
 
         private readonly IServiceProvider _serviceProvider;
 
@@ -21,6 +21,13 @@ namespace InventoryWebApplication.Services.Exporter
             _serviceProvider = serviceProvider;
         }
 
+        /// <summary>
+        /// Factory Method: creates an instance of the base class ExporterService
+        /// </summary>
+        /// <param name="name">The table to export</param>
+        /// <param name="mode">The type of exporter to create</param>
+        /// <returns>An ExporterService of the specified mode that exports the specified table</returns>
+        /// <exception cref="InvalidOperationException">The name is not a valid table name</exception>
         public ExporterService GetInstance(string name, string mode)
         {
             return name.ToLower() switch

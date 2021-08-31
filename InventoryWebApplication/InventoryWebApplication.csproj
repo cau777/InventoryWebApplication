@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="CustomExceptions" />
       <Folder Include="Migrations" />
     </ItemGroup>
 

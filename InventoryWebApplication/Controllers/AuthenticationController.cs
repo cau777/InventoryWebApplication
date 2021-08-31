@@ -13,12 +13,10 @@ namespace InventoryWebApplication.Controllers
 {
     public class AuthenticationController : Controller
     {
-        private readonly ILogger<AuthenticationController> _logger;
         private readonly UsersService _usersService;
 
         public AuthenticationController(ILogger<AuthenticationController> logger, UsersService usersService)
         {
-            _logger = logger;
             _usersService = usersService;
         }
 
@@ -30,7 +28,7 @@ namespace InventoryWebApplication.Controllers
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 return RedirectToFailedLogin();
 
-            User user = await _usersService.FindUserWithPassword(username, password);
+            User user = await _usersService.GetByNameAndPassword(username, password);
             if (user is null) return RedirectToFailedLogin();
 
             ClaimsIdentity claimsIdentity = new(new Claim[]

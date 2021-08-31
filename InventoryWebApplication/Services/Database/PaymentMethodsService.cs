@@ -15,14 +15,15 @@ namespace InventoryWebApplication.Services.Database
             target.ProfitMarginPercentage = values.ProfitMarginPercentage;
         }
 
+        //TODO: Change
         public async Task Set(ICollection<PaymentMethod> newMethods)
         {
             foreach (PaymentMethod newMethod in newMethods)
             {
-                await Add(newMethod);
-                await UpdateByName(newMethod);
+                if (!await Add(newMethod))
+                    await UpdateByName(newMethod.Name, newMethod);
             }
-            
+
             foreach (PaymentMethod method in ItemSet)
             {
                 string lowerName = method.Name.ToLower();

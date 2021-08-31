@@ -6,7 +6,7 @@ namespace InventoryWebApplication.Services.Exporter
 {
     public class CsvExporter<T> : ExporterService where T : class, IIdBasedModel, ITableRow
     {
-        public override string FileType => "text/csv";
+        public override string ContentType => "text/csv";
         public override string FileExtension => "csv";
 
         private readonly DatabaseService<T> _databaseService;

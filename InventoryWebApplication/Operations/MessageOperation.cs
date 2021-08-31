@@ -1,5 +1,8 @@
 namespace InventoryWebApplication.Operations
 {
+    /// <summary>
+    /// Contains a message and a severity to show in a view
+    /// </summary>
     public class MessageOperation
     {
         public static MessageOperation Empty => new();

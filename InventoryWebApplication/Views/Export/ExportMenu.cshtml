@@ -20,7 +20,7 @@
 
         <label class="form-label" for="modeSelect">Mode</label>
         <select id="modeSelect" name="mode">
-            @foreach (string mode in ExporterFactory.Modes)
+            @foreach (string mode in ExporterFactory.AvailableModes)
             {
                 <option value="@mode">@mode.Capitalize()</option>
             }

@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Models.Database
 {
+    /// <summary>
+    /// Stores information about a user of the service
+    /// </summary>
     public class User : IIdBasedModel, INameBasedModel, ITableRow
     {
         public int Id { get; set; }

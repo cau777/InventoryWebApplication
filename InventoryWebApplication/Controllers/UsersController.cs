@@ -102,7 +102,7 @@ namespace InventoryWebApplication.Controllers
             if (!Role.AvailableRoles.Contains(role))
                 return View("EditUserForm", new MessageIdOperation("Invalid role", id));
 
-            bool result = await _usersService.UpdateById(new User(id, username, password, role));
+            bool result = await _usersService.UpdateById(id, new User(id, username, password, role));
 
             return View("EditUserForm",
                 result

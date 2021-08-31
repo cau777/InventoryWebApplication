@@ -17,11 +17,6 @@ namespace InventoryWebApplication.Models.Database
             ProfitMarginPercentage = profitMarginPercentage;
         }
 
-        public double CalcMargin(double price)
-        {
-            return ProfitMarginPercentage / 100d * price;
-        }
-
         public string[] TableRowHeaders => new[] { "Id", "Name", "Profit Margin (%)" };
         public string[] ToTableRow()
         {

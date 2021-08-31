@@ -22,6 +22,12 @@ namespace InventoryWebApplication.Utils
             return claims.GetClaim(ClaimTypes.Name);
         }
         
+        /// <summary>
+        /// Analyses if the provided ClaimPrincipal has access to a determined role
+        /// </summary>
+        /// <param name="claimsPrincipal">The ClaimPrincipal of the user to analyser</param>
+        /// <param name="desiredRole">The target role</param>
+        /// <returns>True if the provided role is equal or more powerful than the target role</returns>
         public static bool HasAccessTo(this ClaimsPrincipal claimsPrincipal, string desiredRole)
         {
             int userRoleIndex = 0;

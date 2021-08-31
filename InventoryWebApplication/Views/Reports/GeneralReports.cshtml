@@ -9,6 +9,8 @@
     ViewBag.Title = "Reports";
     ViewBag.PreviousPage = "";
     Layout = "_Layout";
+    
+    SaleInfo[] sales = await _salesService.GetSales(Model.Start, Model.End, Model.Usernames);
 }
 
 <h3>
@@ -42,7 +44,13 @@
 </div>
 
 <div>
-    <h4>Total Sales</h4>
+    <h4>Summary</h4>
+    <p>
+        <b>Sales count:</b> @sales.Length<br/>
+        <b>Total sales:</b> @(((float)sales.Sum(o => o.TotalPrice)).ToString(CultureInfo.InvariantCulture))<br/>
+        <b>Total profit:</b> @(((float)sales.Sum(o => o.Profit)).ToString(CultureInfo.InvariantCulture))
+    </p>
+
     <div class="card-bottom-margin">
         <div class="card chart column-chart">
             <div id="dailySalesColumnChart"></div>
@@ -96,10 +104,6 @@
 @section Scripts
 {
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    @{
-        SaleInfo[] sales = await _salesService.GetSales(Model.Start, Model.End, Model.Usernames);
-    }
 
     <script>
         const dailySalesColumnChart = document.getElementById('dailySalesColumnChart');

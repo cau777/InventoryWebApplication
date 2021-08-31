@@ -3,12 +3,12 @@
 @inject DatabaseService<PaymentMethod> _databaseService
 
 @{
-    ViewBag.Title = "Products Management";
+    ViewBag.Title = "Payment Methods Management";
     ViewBag.PreviousPage = "";
     Layout = "_Layout";
 }
 
-<h3>Products</h3>
+<h3>Payment Methods</h3>
 <div class="btn-toolbar">
     <a asp-controller="PaymentMethods" asp-action="AddPaymentMethodForm">
         <button class="btn-secondary">Add</button>

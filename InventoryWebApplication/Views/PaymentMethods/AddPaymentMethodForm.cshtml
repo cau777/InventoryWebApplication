@@ -1,0 +1,18 @@
+@{
+    ViewBag.Title = "Add Product";
+    ViewBag.PreviousPage = "products";
+    Layout = "_FormsLayout";
+}
+
+<form class="simple-form" method="post" asp-controller="PaymentMethods" asp-action="AddPaymentMethod">
+    <div class="form-body">
+        <label class="form-label" for="nameInput">Name: </label>
+        <input type="text" name="name" id="nameInput"/>
+        <br/>
+
+        <label class="form-label" for="profitMarginInput">Profit margin (%): </label>
+        <input type="number" step="1" min="0" max="100" name="profitMargin" id="profitMarginInput"/>
+        <br/>
+    </div>
+    <button class="btn-primary" type="submit">Add</button>
+</form>

@@ -19,7 +19,7 @@ namespace InventoryWebApplication.Utils.Formatting
         }
 
         /// <summary>
-        /// Makes the first letter of the string capital
+        ///     Makes the first letter of the string capital
         /// </summary>
         /// <param name="o">The string to be capitalized</param>
         /// <returns>A string with the first letter capital</returns>
@@ -57,7 +57,7 @@ namespace InventoryWebApplication.Utils.Formatting
         }
 
         /// <summary>
-        /// Cuts a string grater than a certain length and appends "..."
+        ///     Cuts a string grater than a certain length and appends "..."
         /// </summary>
         /// <param name="str">The string to be cut</param>
         /// <param name="max">The maximum length of the string</param>

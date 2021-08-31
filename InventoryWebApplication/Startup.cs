@@ -43,13 +43,13 @@ namespace InventoryWebApplication
 
             services.AddDbContext<DatabaseContext>(o =>
                 o.UseSqlite(Configuration["SQLiteConnection:SQLiteConnectionString"]));
-            
+
 
             services.AddTransient<DatabaseService<User>, UsersService>();
             services.AddTransient<DatabaseService<SaleInfo>, SalesService>();
             services.AddTransient<DatabaseService<Product>, ProductsService>();
             services.AddTransient<DatabaseService<PaymentMethod>, PaymentMethodsService>();
-            
+
             services.AddTransient<UsersService>();
             services.AddTransient<SalesService>();
             services.AddTransient<ProductsService>();
@@ -57,11 +57,8 @@ namespace InventoryWebApplication
 
             services.AddTransient<ExporterFactory>();
 
-            services.AddMvc(o =>
-            {
-                o.Filters.Add(new AutoLoggingAttribute());
-            });
-            
+            services.AddMvc(o => { o.Filters.Add(new AutoLoggingAttribute()); });
+
             services.AddRazorPages();
             services.AddControllersWithViews();
         }
@@ -86,7 +83,7 @@ namespace InventoryWebApplication
             app.UseRouting();
 
             app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
-            
+
             app.UseAuthentication();
             app.UseAuthorization();
 

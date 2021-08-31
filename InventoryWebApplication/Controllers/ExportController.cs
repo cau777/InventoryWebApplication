@@ -7,6 +7,7 @@ namespace InventoryWebApplication.Controllers
     public class ExportController : Controller
     {
         private readonly ExporterFactory _exporterFactory;
+
         public ExportController(ExporterFactory exporterFactory)
         {
             _exporterFactory = exporterFactory;

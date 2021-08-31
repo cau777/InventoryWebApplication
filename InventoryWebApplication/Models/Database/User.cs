@@ -6,15 +6,10 @@ using Newtonsoft.Json;
 namespace InventoryWebApplication.Models.Database
 {
     /// <summary>
-    /// Stores information about a user of the service
+    ///     Stores information about a user of the service
     /// </summary>
     public class User : IIdBasedModel, INameBasedModel, ITableRow
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        [MaxLength(32)] public string Password { get; set; }
-        public string Role { get; set; }
-
         public User() { }
 
         public User(int id = default, string name = null, string password = null, string role = null)
@@ -25,10 +20,10 @@ namespace InventoryWebApplication.Models.Database
             Role = role;
         }
 
-        public override string ToString()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
+        [MaxLength(32)] public string Password { get; set; }
+        public string Role { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
         public string[] TableRowHeaders => new[] { "Id", "Name", "Role" };
 
@@ -40,6 +35,11 @@ namespace InventoryWebApplication.Models.Database
                 Name,
                 Role
             };
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
         }
     }
 }

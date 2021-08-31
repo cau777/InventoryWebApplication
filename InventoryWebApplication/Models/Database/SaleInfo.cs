@@ -9,8 +9,6 @@ namespace InventoryWebApplication.Models.Database
 {
     public class SaleInfo : IIdBasedModel, ITableRow
     {
-        public int Id { get; set; }
-
         // Products are stored in Json format
         [NotMapped]
         public List<ProductSale> Products
@@ -26,6 +24,7 @@ namespace InventoryWebApplication.Models.Database
         public string Discount { get; set; }
         public double TotalPrice { get; set; }
         public double Profit { get; set; }
+        public int Id { get; set; }
 
         public string[] TableRowHeaders => new[]
         {

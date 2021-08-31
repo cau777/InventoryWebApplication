@@ -7,7 +7,7 @@ namespace InventoryWebApplication.Utils
     public static class JsUtils
     {
         /// <summary>
-        /// Builds a JavaScript array containing the data of a dictionary to be converted to a chart
+        ///     Builds a JavaScript array containing the data of a dictionary to be converted to a chart
         /// </summary>
         /// <param name="keysLabel">The label of the keys column</param>
         /// <param name="valuesLabel">The label of the values column</param>
@@ -26,17 +26,15 @@ namespace InventoryWebApplication.Utils
                 .Append(valuesLabel).Append("'],");
 
             foreach ((TKey key, TValue value) in dict)
-            {
                 builder.Append("['")
                     .Append(keyToString(key)).Append("', ")
                     .Append(valueToString(value)).Append("],");
-            }
 
             return builder.ToString();
         }
 
         /// <summary>
-        /// Builds a JavaScript array containing the data of a dictionary to be converted to a chart
+        ///     Builds a JavaScript array containing the data of a dictionary to be converted to a chart
         /// </summary>
         /// <param name="keysLabel">The label of the keys column</param>
         /// <param name="values1Label">The label of the values1 column</param>
@@ -60,12 +58,10 @@ namespace InventoryWebApplication.Utils
                 .Append(values2Label).Append("'],");
 
             foreach ((TKey key, (TValue1 item1, TValue2 item2)) in dict)
-            {
                 builder.Append("['")
                     .Append(keyToString(key)).Append("', ")
                     .Append(value1ToString(item1)).Append(", ")
                     .Append(value2ToString(item2)).Append("],");
-            }
 
             return builder.ToString();
         }

@@ -1,8 +1,8 @@
+@inject SalesService _salesService
+@using InventoryWebApplication.Services.Database
 @using InventoryWebApplication.Utils
 @using System.Globalization
 @using InventoryWebApplication.Models.Database
-@using InventoryWebApplication.Services.Database
-@inject SalesService _salesService
 @model InventoryWebApplication.Operations.FilterOperation
 
 @{
@@ -126,7 +126,7 @@
                     @{
                         DateTime totalSalesStart = Model.Start != DateTime.MinValue ? Model.Start : new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
                         DateTime totalSalesEnd = Model.End != DateTime.MaxValue ? Model.End : DateTime.Now;
-                        
+
                         TimeSpan totalTime = totalSalesEnd - totalSalesStart;
 
                         if (totalTime <= TimeSpan.FromDays(31))

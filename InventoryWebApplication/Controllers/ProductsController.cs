@@ -36,7 +36,7 @@ namespace InventoryWebApplication.Controllers
 
         [HttpGet]
         [Route("{id:int}")]
-        [Authorize(Roles = Role.StockManagerAndAbove + "," + Role.Seller)]
+        [Authorize(Roles = Role.SellerAndAbove)]
         public async Task<IActionResult> ProductById([FromRoute] int id)
         {
             Product product = await _productsService.GetById(id);
@@ -48,11 +48,8 @@ namespace InventoryWebApplication.Controllers
         [Route("add")]
         [Authorize(Roles = Role.StockManagerAndAbove)]
         public async Task<IActionResult> AddProduct([FromForm] string name, [FromForm] string description,
-            [FromForm] string availableQuantity, [FromForm] string cost, [FromForm] string sell)
+            [FromForm] int availableQuantity, [FromForm] string cost, [FromForm] string sell)
         {
-            if (!int.TryParse(availableQuantity, NumberStyles.Any, CultureInfo.InvariantCulture, out int quantity))
-                return View("AddProductForm", new MessageOperation($"Invalid quantity: {availableQuantity}"));
-
             if (!float.TryParse(cost, NumberStyles.Any, CultureInfo.InvariantCulture, out float costPrice))
                 return View("AddProductForm", new MessageOperation($"Invalid cost: {cost}"));
 
@@ -63,7 +60,7 @@ namespace InventoryWebApplication.Controllers
                 return View("AddProductForm", new MessageOperation($"Invalid name: {name}"));
 
             if (await _productsService.Add(new Product(name: name, description: description,
-                availableQuantity: quantity, cost: costPrice, sellPrice: sellPrice)))
+                availableQuantity: availableQuantity, cost: costPrice, sellPrice: sellPrice)))
                 return View("AddProductForm", new MessageOperation($"Successfully added {name}", MessageSeverity.info));
 
             return View("AddProductForm", new MessageOperation($"Failed to add {name}"));
@@ -90,26 +87,23 @@ namespace InventoryWebApplication.Controllers
         [Route("edit/{id:int}")]
         [Authorize(Roles = Role.StockManagerAndAbove)]
         public async Task<IActionResult> EditProduct([FromRoute] int id, [FromForm] string name,
-            [FromForm] string description, [FromForm] string availableQuantity, [FromForm] string cost,
+            [FromForm] string description, [FromForm] int availableQuantity, [FromForm] string cost,
             [FromForm] string sell)
         {
-            if (!int.TryParse(availableQuantity, NumberStyles.Any, CultureInfo.InvariantCulture, out int quantity))
-                return View("EditProductForm", new MessageIdOperation($"Invalid quantity: {availableQuantity}", id));
-
             if (!float.TryParse(cost, NumberStyles.Any, CultureInfo.InvariantCulture, out float costPrice))
-                return View("EditProductForm", new MessageIdOperation($"Invalid cost: {cost}", id));
+                return View("EditProductForm", new MessageIdOperation(id, $"Invalid cost: {cost}"));
 
             if (!float.TryParse(sell, NumberStyles.Any, CultureInfo.InvariantCulture, out float sellPrice))
-                return View("EditProductForm", new MessageIdOperation($"Invalid sell price: {sell}", id));
+                return View("EditProductForm", new MessageIdOperation(id, $"Invalid sell price: {sell}"));
 
             if (string.IsNullOrWhiteSpace(name))
-                return View("EditProductForm", new MessageIdOperation($"Invalid name: {name}", id));
+                return View("EditProductForm", new MessageIdOperation(id, $"Invalid name: {name}"));
 
-            bool result = await _productsService.UpdateById(id, new Product(id, name, description, quantity, costPrice, sellPrice));
-            return View("EditProductForm",
-                result
-                    ? new MessageIdOperation("Changes saved", MessageSeverity.info, id)
-                    : new MessageIdOperation("Failed to update product", id));
+            if (await _productsService.UpdateById(id,
+                new Product(id, name, description, availableQuantity, costPrice, sellPrice)))
+                return View("EditProductForm", new MessageIdOperation(id, "Changes saved", MessageSeverity.info));
+
+            return View("EditProductForm", new MessageIdOperation(id, "Failed to update product"));
         }
     }
 }

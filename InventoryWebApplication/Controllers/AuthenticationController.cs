@@ -1,13 +1,12 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using InventoryWebApplication.Models.Database;
 using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services.Database;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InventoryWebApplication.Controllers
 {
@@ -15,7 +14,7 @@ namespace InventoryWebApplication.Controllers
     {
         private readonly UsersService _usersService;
 
-        public AuthenticationController(ILogger<AuthenticationController> logger, UsersService usersService)
+        public AuthenticationController(UsersService usersService)
         {
             _usersService = usersService;
         }
@@ -23,12 +22,12 @@ namespace InventoryWebApplication.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Route("auth")]
-        public async Task<IActionResult> Authenticate([FromForm] string username, [FromForm] string password)
+        public async Task<IActionResult> Authenticate([FromForm] string name, [FromForm] string password)
         {
-            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(password))
                 return RedirectToFailedLogin();
 
-            User user = await _usersService.GetByNameAndPassword(username, password);
+            User user = await _usersService.GetByNameAndPassword(name, password);
             if (user is null) return RedirectToFailedLogin();
 
             ClaimsIdentity claimsIdentity = new(new Claim[]
@@ -41,9 +40,9 @@ namespace InventoryWebApplication.Controllers
             {
                 claimsIdentity
             });
-            
+
             await HttpContext.SignInAsync(claimsPrincipal);
-            
+
             return RedirectToAction("Index", "Home");
         }
 

@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace InventoryWebApplication.Services.Database
 {
     /// <summary>
-    /// Class used to access a database table that can't have the same name
+    ///     Class used to access a database table that can't have the same name
     /// </summary>
     /// <typeparam name="T">The type stored in the database table that has a unique id and a unique name</typeparam>
     public abstract class NameUniqueDatabaseService<T> : DatabaseService<T>
@@ -24,7 +24,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Get an element of the table with the provided name
+        ///     Get an element of the table with the provided name
         /// </summary>
         /// <param name="name">A unique name</param>
         /// <returns>Element with the provided name or null if not found</returns>
@@ -36,7 +36,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Updates an element of the table, replacing its values with new ones
+        ///     Updates an element of the table, replacing its values with new ones
         /// </summary>
         /// <param name="name">Name of the element to update</param>
         /// <param name="values">Object containing the new values</param>
@@ -47,7 +47,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Deletes an element of the table
+        ///     Deletes an element of the table
         /// </summary>
         /// <param name="name">Name of the element to delete</param>
         /// <returns>True if the element was found and deleted</returns>
@@ -70,7 +70,7 @@ namespace InventoryWebApplication.Services.Database
             string lowerName = element.Name.ToLower();
             return !ItemSet.Any(o => lowerName == o.Name.ToLower());
         }
-        
+
         protected override bool CanBeEdited(T target, T values)
         {
             string lowerName = values.Name.ToLower();

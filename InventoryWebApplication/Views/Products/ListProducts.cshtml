@@ -1,7 +1,8 @@
-@using InventoryWebApplication.Services.Database
 @using InventoryWebApplication.Utils.Formatting
 @using InventoryWebApplication.Models.Database
-@inject DatabaseService<Product> _productsService
+@using InventoryWebApplication.Services.Database
+@using System.Globalization
+@inject DatabaseService<Product> _databaseService
 
 @{
     ViewBag.Title = "Products Management";
@@ -15,7 +16,7 @@
         <button class="btn-secondary">Add</button>
     </a>
 </div>
-<div class="table-wrapper table-products-wrapper">
+<div class="table-wrapper table-items-wrapper">
     <table class="table table-bordered">
         <colgroup>
             <col span="1" style="width: 6%">
@@ -35,7 +36,7 @@
             <th>Sell Price</th>
         </tr>
 
-        @foreach (Product product in _productsService.GetAll())
+        @foreach (Product product in _databaseService.GetAll())
         {
             <tr>
                 <td>
@@ -69,14 +70,14 @@
                 <td>
                     <a class="normal-text-link" href="/products/edit/@product.Id">
                         <div>
-                            @product.Cost
+                            @product.Cost.ToString(CultureInfo.InvariantCulture)
                         </div>
                     </a>
                 </td>
                 <td>
                     <a class="normal-text-link" href="/products/edit/@product.Id">
                         <div>
-                            @product.SellPrice
+                            @product.SellPrice.ToString(CultureInfo.InvariantCulture)
                         </div>
                     </a>
                 </td>

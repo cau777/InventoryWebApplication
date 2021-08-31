@@ -1,0 +1,56 @@
+@using InventoryWebApplication.Models.Database
+@using InventoryWebApplication.Services.Database
+@using System.Globalization
+@model InventoryWebApplication.Operations.MessageIdOperation
+@inject DatabaseService<PaymentMethod> _databaseService
+
+@{
+    ViewBag.Title = "Edit Product";
+    ViewBag.PreviousPage = "products";
+    Layout = "_FormsLayout";
+}
+
+@{
+    PaymentMethod paymentMethod = await _databaseService.GetById(Model.Id);
+}
+
+@if (paymentMethod is null)
+{
+    <h1>Payment method not found</h1>
+}
+else
+{
+    <form accept-charset="UTF-8" action="/paymentMethods/edit/@Model.Id" class="simple-form" method="post">
+        <div class="form-body">
+            <label class="form-label" for="idInput">Id: </label>
+            <input value="@paymentMethod.Id" readonly disabled type="text" id="idInput">
+            <br>
+
+            <label class="form-label" for="nameInput">Name: </label>
+            <input value="@paymentMethod.Name" type="text" name="name" id="nameInput"/>
+            <br/>
+
+            <label class="form-label" for="profitMarginInput">Profit margin (%): </label>
+            <input value="@paymentMethod.ProfitMarginPercentage.ToString(CultureInfo.InvariantCulture)" type="number" step="1" min="0" max="100" name="profitMargin" id="profitMarginInput"/>
+            <br/>
+        </div>
+
+        <div>
+            <button class="btn-primary" type="submit">Save</button>
+            <a href="/paymentMethods">
+                <button class="btn-primary" type="button">Discard Changes</button>
+            </a>
+            <button class="btn-primary" id="btnDelete" type="button">Delete</button>
+        </div>
+    </form>
+
+@section Scripts
+{
+    <script>
+        $('#btnDelete').click(function() {
+            sendDeleteRequest("/paymentMethods/delete/@Model.Id")
+            redirectTo("/paymentMethods");
+        });
+    </script>
+}
+}

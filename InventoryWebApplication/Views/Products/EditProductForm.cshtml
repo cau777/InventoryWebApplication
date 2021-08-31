@@ -1,8 +1,8 @@
-@using System.Globalization
 @using InventoryWebApplication.Models.Database
 @using InventoryWebApplication.Services.Database
+@using System.Globalization
 @model InventoryWebApplication.Operations.MessageIdOperation
-@inject DatabaseService<Product> _productsService
+@inject DatabaseService<Product> _databaseService
 
 @{
     ViewBag.Title = "Edit Product";
@@ -11,7 +11,7 @@
 }
 
 @{
-    Product product = await _productsService.GetById(Model.Id);
+    Product product = await _databaseService.GetById(Model.Id);
 }
 
 @if (product is null)
@@ -51,9 +51,9 @@ else
         <div>
             <button class="btn-primary" type="submit">Save</button>
             <a href="/products">
-                <button class="btn-primary" type="button">Discard</button>
+                <button class="btn-primary" type="button">Discard Changes</button>
             </a>
-            <button class="btn-primary" id="btnDelete" type="button">Delete product</button>
+            <button class="btn-primary" id="btnDelete" type="button">Delete</button>
         </div>
     </form>
 

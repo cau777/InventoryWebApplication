@@ -23,7 +23,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Checks whether the password is valid
+        ///     Checks whether the password is valid
         /// </summary>
         /// <param name="password">The password to be checked</param>
         /// <returns>True if the password is valid</returns>
@@ -40,7 +40,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Gets a User with the specified name and password
+        ///     Gets a User with the specified name and password
         /// </summary>
         /// <param name="name">Name of the user to find</param>
         /// <param name="password">Password of the user to find</param>
@@ -58,7 +58,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Deletes an element of the table, ignoring a name. This is used to prevent a User from deleting itself
+        ///     Deletes an element of the table, ignoring a name. This is used to prevent a User from deleting itself
         /// </summary>
         /// <param name="id">Id of the element to delete</param>
         /// <param name="ignoreName">Name to ignore</param>
@@ -69,7 +69,7 @@ namespace InventoryWebApplication.Services.Database
 
             if (element is null)
             {
-                _logger.LogWarning($"Could not add item to table User. Id not found.");
+                _logger.LogWarning("Could not add item to table User. Id not found.");
                 return false;
             }
 

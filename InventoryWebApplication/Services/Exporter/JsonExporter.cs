@@ -8,29 +8,30 @@ namespace InventoryWebApplication.Services.Exporter
 {
     public class JsonExporter<T> : ExporterService where T : class, IIdBasedModel, ITableRow
     {
-        public override string ContentType => "application/json";
-        public override string FileExtension => "json";
-
         private readonly DatabaseService<T> _databaseService;
+
         public JsonExporter(DatabaseService<T> databaseService)
         {
             _databaseService = databaseService;
         }
-        
+
+        public override string ContentType => "application/json";
+        public override string FileExtension => "json";
+
         public override byte[] Export()
         {
             List<Dictionary<string, string>> entries = new();
-            
+
             foreach (T model in _databaseService.GetAll())
             {
                 Dictionary<string, string> dict = new();
-                
+
                 string[] headers = model.TableRowHeaders;
                 string[] values = model.ToTableRow();
-                
-                for (int i = 0; i < Math.Min(headers.Length, values.Length); i++) 
+
+                for (int i = 0; i < Math.Min(headers.Length, values.Length); i++)
                     dict[headers[i]] = values[i];
-                
+
                 entries.Add(dict);
             }
 

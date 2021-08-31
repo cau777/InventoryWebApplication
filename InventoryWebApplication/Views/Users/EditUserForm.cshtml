@@ -1,7 +1,7 @@
-@using InventoryWebApplication.Services.Database
 @using InventoryWebApplication.Models.Database
+@using InventoryWebApplication.Services.Database
 @model InventoryWebApplication.Operations.MessageIdOperation
-@inject DatabaseService<User> _usersService
+@inject DatabaseService<User> _databaseService
 
 @{
     ViewBag.Title = "Edit user";
@@ -10,7 +10,7 @@
 }
 
 @{
-    User user = await _usersService.GetById(Model.Id);
+    User user = await _databaseService.GetById(Model.Id);
 }
 
 @if (user is null)
@@ -25,8 +25,8 @@ else
             <input value="@user.Id" readonly disabled type="text" id="idInput">
             <br>
 
-            <label class="form-label" for="usernameInput">Name: </label>
-            <input value="@user.Name" name="username" type="text" id="usernameInput">
+            <label class="form-label" for="nameInput">Name: </label>
+            <input value="@user.Name" name="name" type="text" id="nameInput">
             <br>
 
             <label class="form-label" for="passwordInput">Password: </label>
@@ -52,9 +52,9 @@ else
         <div>
             <button class="btn-primary" type="submit">Save</button>
             <a href="/users">
-                <button class="btn-primary" type="button">Discard</button>
+                <button class="btn-primary" type="button">Discard Changes</button>
             </a>
-            <button class="btn-primary" id="btnDelete" type="button">Delete user</button>
+            <button class="btn-primary" id="btnDelete" type="button">Delete</button>
         </div>
     </form>
 

@@ -22,7 +22,7 @@ namespace InventoryWebApplication.Services.Exporter
         }
 
         /// <summary>
-        /// Factory Method: creates an instance of the base class ExporterService
+        ///     Factory Method: creates an instance of the base class ExporterService
         /// </summary>
         /// <param name="name">The table to export</param>
         /// <param name="mode">The type of exporter to create</param>

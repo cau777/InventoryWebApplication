@@ -11,21 +11,16 @@ using Microsoft.Extensions.Logging;
 namespace InventoryWebApplication.Services.Database
 {
     /// <summary>
-    /// Default class used to access a database table
+    ///     Default class used to access a database table
     /// </summary>
     /// <typeparam name="T">The type stored in the database table that has a unique id</typeparam>
     public abstract class DatabaseService<T> where T : class, IIdBasedModel
     {
-        /// <summary>
-        /// Total elements in the table
-        /// </summary>
-        public int Count => ItemSet.Count();
+        private readonly ILogger<DatabaseService<T>> _logger;
+        protected readonly DatabaseContext DatabaseContext;
 
         protected readonly DbSet<T> ItemSet;
-        protected readonly DatabaseContext DatabaseContext;
         protected readonly string TableName;
-
-        private readonly ILogger<DatabaseService<T>> _logger;
 
         protected DatabaseService(DbSet<T> itemSet, DatabaseContext databaseContext, ILogger<DatabaseService<T>> logger)
         {
@@ -37,29 +32,34 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Checks whether the element can be added to the table
+        ///     Total elements in the table
+        /// </summary>
+        public int Count => ItemSet.Count();
+
+        /// <summary>
+        ///     Checks whether the element can be added to the table
         /// </summary>
         /// <param name="element">Element to analyse</param>
         /// <returns>True if the element can be added</returns>
         protected abstract bool CanBeAdded([NotNull] T element);
-        
+
         /// <summary>
-        /// Checks whether the element can be updated to the values
+        ///     Checks whether the element can be updated to the values
         /// </summary>
         /// <param name="target">Element to analyse</param>
         /// <param name="values">New values</param>
         /// <returns>True if the element can be added</returns>
         protected abstract bool CanBeEdited([NotNull] T target, [NotNull] T values);
-        
+
         /// <summary>
-        /// Sets target's fields to the provided values
+        ///     Sets target's fields to the provided values
         /// </summary>
         /// <param name="target">Element to update values</param>
         /// <param name="values">New values</param>
         protected abstract void SetValues([NotNull] T target, [NotNull] T values);
 
         /// <summary>
-        /// Get an element of the table with the provided id
+        ///     Get an element of the table with the provided id
         /// </summary>
         /// <param name="id">A unique id</param>
         /// <returns>Element with the provided id or null if not found</returns>
@@ -70,7 +70,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Gets all elements of the table, including related entities
+        ///     Gets all elements of the table, including related entities
         /// </summary>
         /// <returns>An IEnumerable that contains all elements and all related entities</returns>
         [ItemNotNull]
@@ -80,7 +80,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Adds an element to the table
+        ///     Adds an element to the table
         /// </summary>
         /// <param name="element">The element to add</param>
         /// <returns>True if the element was added</returns>
@@ -102,7 +102,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Edits an element of the table, replacing its values with new ones
+        ///     Edits an element of the table, replacing its values with new ones
         /// </summary>
         /// <param name="target">The element to be edited</param>
         /// <param name="values">Object containing the new values</param>
@@ -128,7 +128,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Updates an element of the table, replacing its values with new ones
+        ///     Updates an element of the table, replacing its values with new ones
         /// </summary>
         /// <param name="id">Id of the element to update</param>
         /// <param name="values">Object containing the new values</param>
@@ -139,7 +139,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Deletes an element of the table
+        ///     Deletes an element of the table
         /// </summary>
         /// <param name="element">Element to delete</param>
         public async Task Delete([NotNull] T element)
@@ -147,9 +147,9 @@ namespace InventoryWebApplication.Services.Database
             ItemSet.Remove(element);
             await DatabaseContext.SaveChangesAsync();
         }
-        
+
         /// <summary>
-        /// Deletes an element of the table
+        ///     Deletes an element of the table
         /// </summary>
         /// <param name="id">Id of the element to delete</param>
         /// <returns>True if the element was found and deleted</returns>

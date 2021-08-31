@@ -18,7 +18,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Adds a number to the available quantity of a product
+        ///     Adds a number to the available quantity of a product
         /// </summary>
         /// <param name="product">Product to be updated</param>
         /// <param name="shift">Number to add</param>

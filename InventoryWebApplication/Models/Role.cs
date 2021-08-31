@@ -5,22 +5,17 @@ namespace InventoryWebApplication.Models
     public static class Role
     {
         /// <summary>
-        /// Array of available roles, ordered from most powerful to least powerful
-        /// </summary>
-        public static string[] AvailableRoles => new[] {HrManager, StockManager, Seller};
-
-        /// <summary>
-        /// Can manage users, products and payment methods, see reports, sell products, and export tables
+        ///     Can manage users, products and payment methods, see reports, sell products, and export tables
         /// </summary>
         public const string HrManager = "hr-manager";
-        
+
         /// <summary>
-        /// Can manage products, see reports, sell products, and export tables
+        ///     Can manage products, see reports, sell products, and export tables
         /// </summary>
         public const string StockManager = "stock-manager";
-        
+
         /// <summary>
-        /// Can sell products
+        ///     Can sell products
         /// </summary>
         public const string Seller = "seller";
 
@@ -28,7 +23,12 @@ namespace InventoryWebApplication.Models
         public const string SellerAndAbove = HrManager + "," + StockManager + "," + Seller;
 
         /// <summary>
-        /// Formats the role name
+        ///     Array of available roles, ordered from most powerful to least powerful
+        /// </summary>
+        public static string[] AvailableRoles => new[] { HrManager, StockManager, Seller };
+
+        /// <summary>
+        ///     Formats the role name
         /// </summary>
         /// <param name="role">Database role name</param>
         /// <returns>A nicely formatted string with the role name</returns>

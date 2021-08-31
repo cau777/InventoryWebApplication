@@ -21,9 +21,9 @@ namespace InventoryWebApplication.Utils
         {
             return claims.GetClaim(ClaimTypes.Name);
         }
-        
+
         /// <summary>
-        /// Analyses if the provided ClaimPrincipal has access to a determined role
+        ///     Analyses if the provided ClaimPrincipal has access to a determined role
         /// </summary>
         /// <param name="claimsPrincipal">The ClaimPrincipal of the user to analyser</param>
         /// <param name="desiredRole">The target role</param>
@@ -35,15 +35,9 @@ namespace InventoryWebApplication.Utils
 
             for (int i = 0; i < Role.AvailableRoles.Length; i++)
             {
-                if (Role.AvailableRoles[i] == desiredRole)
-                {
-                    desiredRoleIndex = i;
-                }
+                if (Role.AvailableRoles[i] == desiredRole) desiredRoleIndex = i;
 
-                if (claimsPrincipal.IsInRole(Role.AvailableRoles[i]))
-                {
-                    userRoleIndex = i;
-                }
+                if (claimsPrincipal.IsInRole(Role.AvailableRoles[i])) userRoleIndex = i;
             }
 
             return userRoleIndex <= desiredRoleIndex;

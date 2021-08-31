@@ -14,9 +14,9 @@ namespace InventoryWebApplication.Controllers
     [Route("sales")]
     public class SalesController : Controller
     {
+        private readonly PaymentMethodsService _paymentMethodsService;
         private readonly ProductsService _productsService;
         private readonly SalesService _salesService;
-        private readonly PaymentMethodsService _paymentMethodsService;
         private readonly UsersService _usersService;
 
         public SalesController(ProductsService productsService, SalesService salesService,
@@ -50,12 +50,12 @@ namespace InventoryWebApplication.Controllers
                 Product product = await _productsService.GetById(productSale.Id);
                 if (product is null) return NotFound();
                 if (product.AvailableQuantity < productSale.Quantity) return BadRequest();
-                
+
                 total += product.SellPrice * productSale.Quantity;
                 cost += product.Cost * productSale.Quantity;
                 products.Add(product);
             }
-            
+
             double discount;
             if (info.Discount.Contains('%'))
             {
@@ -70,7 +70,7 @@ namespace InventoryWebApplication.Controllers
                 _ = double.TryParse(info.Discount.Replace(",", "."), NumberStyles.Any, CultureInfo.InvariantCulture,
                     out discount);
             }
-            
+
             if (total - discount < 0) discount = total;
 
             info.Discount = discount.ToString(CultureInfo.InvariantCulture);
@@ -78,16 +78,14 @@ namespace InventoryWebApplication.Controllers
             info.Method = await _paymentMethodsService.GetById(info.Method.Id);
 
             if (info.Method is null) return BadRequest();
-            
+
             info.Profit = (info.TotalPrice - discount) * info.Method.ProfitMarginPercentage / 100d - cost;
             info.Seller = await _usersService.GetByName(User.Claims.GetName());
 
             int index = 0;
             foreach (ProductSale productSale in info.Products)
-            {
                 await _productsService.ShiftProductQuantity(products[index++], -productSale.Quantity);
-            }
-            
+
             await _salesService.Add(info);
 
             return Ok();

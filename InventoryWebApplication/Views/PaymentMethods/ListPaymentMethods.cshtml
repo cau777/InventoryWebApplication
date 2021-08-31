@@ -1,17 +1,16 @@
-﻿@using InventoryWebApplication.Utils
 @using InventoryWebApplication.Models.Database
 @using InventoryWebApplication.Services.Database
-@inject DatabaseService<User> _databaseService
+@inject DatabaseService<PaymentMethod> _databaseService
 
 @{
-    ViewBag.Title = "Users Management";
+    ViewBag.Title = "Products Management";
     ViewBag.PreviousPage = "";
     Layout = "_Layout";
 }
 
-<h3>Users</h3>
+<h3>Products</h3>
 <div class="btn-toolbar">
-    <a asp-controller="Users" asp-action="AddUserForm">
+    <a asp-controller="PaymentMethods" asp-action="AddPaymentMethodForm">
         <button class="btn-secondary">Add</button>
     </a>
 </div>
@@ -19,35 +18,37 @@
     <table class="table table-bordered">
         <colgroup>
             <col span="1" style="width: 6%">
-            <col span="1" style="width: auto">
+            <col span="1" style="width: 60%">
             <col span="1" style="width: auto">
         </colgroup>
+
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Role</th>
+            <th>Profit Margin (%)</th>
         </tr>
-        @foreach (User user in _databaseService.GetAll().Where(o => o.Name != User.Claims.GetName()))
+
+        @foreach (PaymentMethod paymentMethod in _databaseService.GetAll())
         {
             <tr>
                 <td>
-                    <a class="normal-text-link" href="/users/edit/@user.Id">
+                    <a class="normal-text-link" href="/paymentMethods/edit/@paymentMethod.Id">
                         <div>
-                            @user.Id
+                            @paymentMethod.Id
                         </div>
                     </a>
                 </td>
                 <td>
-                    <a class="normal-text-link" href="/users/edit/@user.Id">
+                    <a class="normal-text-link" href="/paymentMethods/edit/@paymentMethod.Id">
                         <div>
-                            @user.Name
+                            @paymentMethod.Name
                         </div>
                     </a>
                 </td>
                 <td>
-                    <a class="normal-text-link" href="/users/edit/@user.Id">
+                    <a class="normal-text-link" href="/paymentMethods/edit/@paymentMethod.Id">
                         <div>
-                            @Role.GetFormattedName(user.Role)
+                            @paymentMethod.ProfitMarginPercentage
                         </div>
                     </a>
                 </td>

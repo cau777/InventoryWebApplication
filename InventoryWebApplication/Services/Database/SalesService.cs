@@ -21,7 +21,7 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Returns sales that happened between two dates optionally filtered by users 
+        ///     Returns sales that happened between two dates optionally filtered by users
         /// </summary>
         /// <param name="start">The start date (inclusive)</param>
         /// <param name="end">The final date (inclusive)</param>
@@ -57,11 +57,14 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Counts the number of sales per value of a property
+        ///     Counts the number of sales per value of a property
         /// </summary>
         /// <param name="sales">Sales to search</param>
         /// <param name="prop">Function to get the property value</param>
-        /// <returns>A dictionary with keys that represent property values and values that represent the number of sales with that value</returns>
+        /// <returns>
+        ///     A dictionary with keys that represent property values and values that represent the number of sales with that
+        ///     value
+        /// </returns>
         public IDictionary<string, int> CountSalesPerProperty(IEnumerable<SaleInfo> sales, Func<SaleInfo, string> prop)
         {
             Dictionary<string, int> dict = new();
@@ -77,11 +80,14 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Sums the total price of sales per value of a property
+        ///     Sums the total price of sales per value of a property
         /// </summary>
         /// <param name="sales">Sales to search</param>
         /// <param name="prop">Function to get the property value</param>
-        /// <returns>A dictionary with keys that represent property values and values that represent the total price of sales with that value</returns>
+        /// <returns>
+        ///     A dictionary with keys that represent property values and values that represent the total price of sales with
+        ///     that value
+        /// </returns>
         public IDictionary<string, double> SumSalesPerProperty(IEnumerable<SaleInfo> sales, Func<SaleInfo, string> prop)
         {
             Dictionary<string, double> dict = new();
@@ -98,11 +104,14 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Sums the total profit of sales per value of a property
+        ///     Sums the total profit of sales per value of a property
         /// </summary>
         /// <param name="sales">Sales to search</param>
         /// <param name="prop">Function to get the property value</param>
-        /// <returns>A dictionary with keys that represent property values and values that represent the total profit of sales with that value</returns>
+        /// <returns>
+        ///     A dictionary with keys that represent property values and values that represent the total profit of sales with
+        ///     that value
+        /// </returns>
         public IDictionary<string, double> SumSalesProfitPerProperty(IEnumerable<SaleInfo> sales,
             Func<SaleInfo, string> prop)
         {
@@ -120,22 +129,22 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Gets the daily sales and profit in the specified time period
+        ///     Gets the daily sales and profit in the specified time period
         /// </summary>
         /// <param name="start">The start day (inclusive)</param>
         /// <param name="end">The end day (inclusive)</param>
         /// <param name="sales">Sales to search</param>
-        /// <returns>A dictionary with keys representing dates and values representing a tuple of the total price and the total profit of sales in the day</returns>
+        /// <returns>
+        ///     A dictionary with keys representing dates and values representing a tuple of the total price and the total
+        ///     profit of sales in the day
+        /// </returns>
         public IDictionary<DateTime, (double, double)> GetDailySalesAndProfit(DateTime start, DateTime end,
             IEnumerable<SaleInfo> sales)
         {
             Dictionary<DateTime, (double, double)> dict = new();
 
             // All dates between start and end are added
-            for (DateTime i = start.Date; i <= end.Date; i = i.AddDays(1))
-            {
-                dict.Add(i.Date, (0, 0));
-            }
+            for (DateTime i = start.Date; i <= end.Date; i = i.AddDays(1)) dict.Add(i.Date, (0, 0));
 
             foreach (SaleInfo info in sales)
             {
@@ -147,12 +156,15 @@ namespace InventoryWebApplication.Services.Database
         }
 
         /// <summary>
-        /// Gets the monthly sales and profit in the specified time period
+        ///     Gets the monthly sales and profit in the specified time period
         /// </summary>
         /// <param name="start">The start month (inclusive)</param>
         /// <param name="end">The end month (inclusive)</param>
         /// <param name="sales">Sales to search</param>
-        /// <returns>A dictionary with keys representing months and values representing a tuple of the total price and the total profit of sales in the month</returns>
+        /// <returns>
+        ///     A dictionary with keys representing months and values representing a tuple of the total price and the total
+        ///     profit of sales in the month
+        /// </returns>
         public IDictionary<DateTime, (double, double)> GetMonthlySalesAndProfit(DateTime start, DateTime end,
             IEnumerable<SaleInfo> sales)
         {
@@ -160,10 +172,7 @@ namespace InventoryWebApplication.Services.Database
             DateTime startMonth = new(start.Year, start.Month, 1);
             DateTime endMonth = new(end.Year, end.Month, DateTime.DaysInMonth(end.Year, end.Month));
 
-            for (DateTime i = startMonth; i <= endMonth; i = i.AddMonths(1))
-            {
-                dict.Add(i.Date, (0, 0));
-            }
+            for (DateTime i = startMonth; i <= endMonth; i = i.AddMonths(1)) dict.Add(i.Date, (0, 0));
 
             foreach (SaleInfo info in sales)
             {

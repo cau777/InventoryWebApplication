@@ -30,31 +30,30 @@ namespace InventoryWebApplication.Controllers
         [HttpPost]
         [Route("add")]
         [Authorize(Roles = Role.HrManager)]
-        public async Task<IActionResult> AddUser([FromForm] string username, [FromForm] string password,
+        public async Task<IActionResult> AddUser([FromForm] string name, [FromForm] string password,
             [FromForm] string role)
         {
             role = role.ToLower();
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (string.IsNullOrWhiteSpace(name))
                 return View("AddUserForm", new MessageOperation("Name is required"));
 
-            if (string.IsNullOrWhiteSpace(password))
-                return View("AddUserForm", new MessageOperation("Password is required"));
+            if (!string.IsNullOrWhiteSpace(password) && !UsersService.IsPasswordValid(password))
+                return View("AddUserForm", new MessageOperation("Invalid password"));
 
             if (string.IsNullOrWhiteSpace(role))
                 return View("AddUserForm", new MessageOperation("Role is required"));
 
-            if (await _usersService.GetByName(username) is not null)
+            if (await _usersService.GetByName(name) is not null)
                 return View("AddUserForm", new MessageOperation("This user already exists"));
 
             if (!Role.AvailableRoles.Contains(role))
                 return View("AddUserForm", new MessageOperation("Invalid role"));
 
-            if (await _usersService.Add(new User(name: username, password: password, role: role)))
-                return View("AddUserForm",
-                    new MessageOperation($"Successfully added {username}", MessageSeverity.info));
+            if (await _usersService.Add(new User(name: name, password: password, role: role)))
+                return View("AddUserForm", new MessageOperation($"Successfully added {name}", MessageSeverity.info));
 
-            return View("AddUserForm", new MessageOperation($"Failed to add {username}"));
+            return View("AddUserForm", new MessageOperation($"Failed to add {name}"));
         }
 
         [HttpGet]
@@ -85,29 +84,27 @@ namespace InventoryWebApplication.Controllers
         [HttpPost]
         [Route("edit/{id:int}")]
         [Authorize(Roles = Role.HrManager)]
-        public async Task<IActionResult> EditUser([FromRoute] int id, [FromForm] string username,
+        public async Task<IActionResult> EditUser([FromRoute] int id, [FromForm] string name,
             [FromForm] string password, [FromForm] string role)
         {
             role = role.ToLower();
 
-            if (string.IsNullOrWhiteSpace(username))
-                return View("EditUserForm", new MessageIdOperation("Name is required", id));
+            if (string.IsNullOrWhiteSpace(name))
+                return View("EditUserForm", new MessageIdOperation(id, "Name is required"));
 
             if (!string.IsNullOrWhiteSpace(password) && !UsersService.IsPasswordValid(password))
-                return View("EditUserForm", new MessageIdOperation("Invalid password", id));
+                return View("EditUserForm", new MessageIdOperation(id, "Invalid password"));
 
             if (string.IsNullOrWhiteSpace(role))
-                return View("EditUserForm", new MessageIdOperation("Role is required", id));
+                return View("EditUserForm", new MessageIdOperation(id, "Role is required"));
 
             if (!Role.AvailableRoles.Contains(role))
-                return View("EditUserForm", new MessageIdOperation("Invalid role", id));
+                return View("EditUserForm", new MessageIdOperation(id, "Invalid role"));
 
-            bool result = await _usersService.UpdateById(id, new User(id, username, password, role));
+            if (await _usersService.UpdateById(id, new User(id, name, password, role)))
+                return View("EditUserForm", new MessageIdOperation(id, "Changes saved", MessageSeverity.info));
 
-            return View("EditUserForm",
-                result
-                    ? new MessageIdOperation("Changes saved", MessageSeverity.info, id)
-                    : new MessageIdOperation("Failed to update user", id));
+            return View("EditUserForm", new MessageIdOperation(id, "Failed to update user"));
         }
     }
 }

@@ -5,20 +5,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="JetBrains.Annotations" Version="2021.2.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8" />
-      <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+        <PackageReference Include="JetBrains.Annotations" Version="2021.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.8"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="CustomExceptions" />
-      <Folder Include="Migrations" />
+        <Folder Include="CustomExceptions"/>
+        <Folder Include="Migrations"/>
     </ItemGroup>
 
 </Project>

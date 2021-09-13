@@ -8,7 +8,7 @@
 
 <h3>Export</h3>
 <form class="simple-form" asp-controller="Export" asp-action="ExportTable" method="get" target="_blank">
-    <div class="form-body">
+    <div class="form-section">
         <label class="form-label">Table</label>
         <select id="tableSelect" name="name">
             @foreach (string name in ExporterFactory.AvailableTables)

@@ -1,12 +1,7 @@
 namespace InventoryWebApplication.Models.Interfaces
 {
-    public interface ITableRow
+    public interface IToTableRow
     {
-        /// <summary>
-        ///     The table headers as a string array
-        /// </summary>
-        string[] TableRowHeaders { get; }
-
         /// <summary>
         ///     Selects the most important fields to export
         /// </summary>

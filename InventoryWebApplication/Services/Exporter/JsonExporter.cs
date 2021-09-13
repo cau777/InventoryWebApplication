@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Services.Exporter
 {
-    public class JsonExporter<T> : ExporterService where T : class, IIdBasedModel, ITableRow
+    public class JsonExporter<T> : ExporterService where T : class, IIdBasedModel, IToTableRow, ITableHeaders
     {
         private readonly DatabaseService<T> _databaseService;
 
@@ -26,7 +26,7 @@ namespace InventoryWebApplication.Services.Exporter
             {
                 Dictionary<string, string> dict = new();
 
-                string[] headers = model.TableRowHeaders;
+                string[] headers = model.TableHeaders;
                 string[] values = model.ToTableRow();
 
                 for (int i = 0; i < Math.Min(headers.Length, values.Length); i++)

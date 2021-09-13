@@ -4,7 +4,7 @@ using InventoryWebApplication.Services.Database;
 
 namespace InventoryWebApplication.Services.Exporter
 {
-    public class CsvExporter<T> : ExporterService where T : class, IIdBasedModel, ITableRow
+    public class CsvExporter<T> : ExporterService where T : class, IIdBasedModel, IToTableRow, ITableHeaders
     {
         private readonly DatabaseService<T> _databaseService;
 
@@ -26,7 +26,7 @@ namespace InventoryWebApplication.Services.Exporter
                 if (firstTime)
                 {
                     firstTime = false;
-                    builder.AppendJoin(',', model.TableRowHeaders).AppendLine();
+                    builder.AppendJoin(',', model.TableHeaders).AppendLine();
                 }
 
                 builder.AppendJoin(',', model.ToTableRow()).AppendLine();

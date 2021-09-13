@@ -4,6 +4,7 @@ using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Models.Database;
 using InventoryWebApplication.Services.Database;
 using InventoryWebApplication.Services.Exporter;
+using InventoryWebApplication.Services.Importer;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -54,8 +55,9 @@ namespace InventoryWebApplication
             services.AddTransient<SalesService>();
             services.AddTransient<ProductsService>();
             services.AddTransient<PaymentMethodsService>();
-
+            
             services.AddTransient<ExporterFactory>();
+            services.AddTransient<ImporterFactory>();
 
             services.AddMvc(o => { o.Filters.Add(new AutoLoggingAttribute()); });
 

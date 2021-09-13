@@ -104,6 +104,18 @@
 
         @if (User.HasAccessTo(Role.StockManager))
         {
+            <a class="normal-text-link" asp-controller="Import" asp-action="ImportMenu">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark">Import Menu</h5>
+                        <span class="card-img" uk-icon="icon: upload; ratio: 7.5"></span>
+                    </div>
+                </div>
+            </a>
+        }
+
+        @if (User.HasAccessTo(Role.StockManager))
+        {
             <a class="normal-text-link" asp-controller="Export" asp-action="ExportMenu">
                 <div class="card">
                     <div class="card-body">

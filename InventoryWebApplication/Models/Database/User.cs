@@ -8,7 +8,7 @@ namespace InventoryWebApplication.Models.Database
     /// <summary>
     ///     Stores information about a user of the service
     /// </summary>
-    public class User : IIdBasedModel, INameBasedModel, ITableRow
+    public class User : IIdBasedModel, INameBasedModel, IToTableRow, ITableHeaders
     {
         public User() { }
 
@@ -25,7 +25,7 @@ namespace InventoryWebApplication.Models.Database
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public string[] TableRowHeaders => new[] { "Id", "Name", "Role" };
+        public string[] TableHeaders => new[] { "Id", "Name", "Role" };
 
         public string[] ToTableRow()
         {

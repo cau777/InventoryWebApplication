@@ -3,7 +3,7 @@ using InventoryWebApplication.Models.Interfaces;
 
 namespace InventoryWebApplication.Models.Database
 {
-    public class PaymentMethod : IIdBasedModel, INameBasedModel, ITableRow
+    public class PaymentMethod : IIdBasedModel, INameBasedModel, IToTableRow, ITableHeaders
     {
         public PaymentMethod() { }
 
@@ -17,7 +17,7 @@ namespace InventoryWebApplication.Models.Database
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public string[] TableRowHeaders => new[] { "Id", "Name", "Profit Margin (%)" };
+        public string[] TableHeaders => new[] { "Id", "Name", "Profit Margin (%)" };
 
         public string[] ToTableRow()
         {

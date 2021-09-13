@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Models.Database
 {
-    public class SaleInfo : IIdBasedModel, ITableRow
+    public class SaleInfo : IIdBasedModel, IToTableRow, ITableHeaders
     {
         // Products are stored in Json format
         [NotMapped]
@@ -26,7 +26,7 @@ namespace InventoryWebApplication.Models.Database
         public double Profit { get; set; }
         public int Id { get; set; }
 
-        public string[] TableRowHeaders => new[]
+        public string[] TableHeaders => new[]
         {
             "Id", "Products", "Method Id", "Method Name", "Seller Id", "Seller Name", "Sell Time", "Discount",
             "Total Price", "Profit"

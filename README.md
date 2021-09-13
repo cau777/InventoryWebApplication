@@ -9,6 +9,7 @@ An expandable inventory management system built with ASP.Net Core. It allows use
 - Roles: Hr Manager, Stock Manager, and Seller
 - SQLite database integrated with Entity Framework
 - Option to export tables to CSV and JSON
+- Option to import data from CSV and JSON files
 - Storage sales' information: seller, time, price, profit, discount, payment method, and products
 - Reports based on sales time, seller, and payment method
 - Sales menu:
@@ -26,5 +27,5 @@ An expandable inventory management system built with ASP.Net Core. It allows use
 ![](Screenshots/SalesMenu.png)
 
 ##### Default user:
-Name: debug
-Password: debug
+- Name: debug
+- Password: debug

@@ -9,7 +9,7 @@
     ViewBag.Title = "Reports";
     ViewBag.PreviousPage = "";
     Layout = "_Layout";
-    
+
     SaleInfo[] sales = await _salesService.GetSales(Model.Start, Model.End, Model.Usernames);
 }
 
@@ -133,19 +133,21 @@
 
                         TimeSpan totalTime = totalSalesEnd - totalSalesStart;
 
-                        if (totalTime <= TimeSpan.FromDays(31))
+                        if (totalTime <= TimeSpan.FromDays(30))
                         {
+                            
                             @: data = google.visualization.arrayToDataTable([
                             @Html.Raw(JsUtils.BuildChartData("Day", "Sales", "Profit", _salesService.GetDailySalesAndProfit(totalSalesStart, totalSalesEnd, sales), o => o.ToString("dd/MM"), o => o.ToString(CultureInfo.InvariantCulture), o => o.ToString(CultureInfo.InvariantCulture)))
                             @: ]);
                             @:finishColumnChart(dailySalesColumnChart, data,  'Daily sales (@totalSalesStart.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) - @totalSalesEnd.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern))');
+
                         }
                         else
                         {
                             @: data = google.visualization.arrayToDataTable([
                             @Html.Raw(JsUtils.BuildChartData("Month", "Sales", "Profit", _salesService.GetMonthlySalesAndProfit(totalSalesStart, totalSalesEnd, sales), o => o.ToString("MM/yy"), o => o.ToString(CultureInfo.InvariantCulture), o => o.ToString(CultureInfo.InvariantCulture)))
                             @: ]);
-                            @:finishColumnChart(dailySalesColumnChart, data,  'Monthly sales (@totalSalesStart.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) - @totalSalesEnd.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern))');
+                            @:finishColumnChart(dailySalesColumnChart, data,  'Monthly sales (@totalSalesStart.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) - @totalSalesEnd.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern))');                                                                                                                                                                                                                      
                         }
                     }
                 },

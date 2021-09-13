@@ -153,7 +153,7 @@ namespace InventoryWebApplication.Services.Database
             for (DateTime i = start.Date; i <= end.Date; i = i.AddDays(1)) 
                 dict.Add(i.Date, (0, 0));
 
-            foreach (SaleInfo info in sales)
+            foreach (SaleInfo info in sales.Where(o => o.SellTime.Date >= start && o.SellTime.Date <= end))
             {
                 (double totalPrice, double profit) = dict[info.SellTime.Date];
                 dict[info.SellTime.Date] = (totalPrice + info.TotalPrice, profit + info.Profit);

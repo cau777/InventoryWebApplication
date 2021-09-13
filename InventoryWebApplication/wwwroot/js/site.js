@@ -20,9 +20,9 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function fadeAlert() {
+function fadeAlerts() {
     const intervalFadeError = setInterval(function() {
-        $('#failed-alert').fadeOut(300, 'swing', function() {});
+        $('.fade-alert').fadeOut(300, 'swing', function() {});
         clearInterval(intervalFadeError);
     }, 5000);
 }

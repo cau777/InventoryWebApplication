@@ -7,7 +7,7 @@
 <h3>@ViewData["Title"]</h3>
 @if (!Model.IsEmpty)
 {
-    <div role="alert" class="alert-@Model.Severity" id="failed-alert">@Model.Message</div>
+    <div role="alert" class="alert alert-@Model.Severity failed-alert">@Model.Message</div>
 }
 
 @RenderBody()
@@ -17,7 +17,7 @@
     @if (!Model.IsEmpty)
     {
         <script>
-            fadeAlert();
+            fadeAlerts();
         </script>
     }
     @await RenderSectionAsync("Scripts", false)

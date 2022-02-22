@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
+using System.Linq;
 using InventoryWebApplication.Models.Interfaces;
 using Newtonsoft.Json;
 
@@ -29,7 +30,7 @@ namespace InventoryWebApplication.Models.Database
         public string[] TableHeaders => new[]
         {
             "Id", "Products", "Method Id", "Method Name", "Seller Id", "Seller Name", "Sell Time", "Discount",
-            "Total Price", "Profit"
+            "Total Price", "Profit",
         };
 
         public string[] ToTableRow()
@@ -37,7 +38,7 @@ namespace InventoryWebApplication.Models.Database
             return new[]
             {
                 Id.ToString(CultureInfo.InvariantCulture),
-                ProductsJson,
+                string.Join(';', Products.Select(o => $"(Id={o.Id} N={o.Quantity})")),
                 Method.Id.ToString(CultureInfo.InvariantCulture),
                 Method.Name,
                 Seller.Id.ToString(CultureInfo.InvariantCulture),
@@ -45,7 +46,7 @@ namespace InventoryWebApplication.Models.Database
                 SellTime.ToString("G"),
                 Discount,
                 TotalPrice.ToString(CultureInfo.InvariantCulture),
-                Profit.ToString(CultureInfo.InvariantCulture)
+                Profit.ToString(CultureInfo.InvariantCulture),
             };
         }
     }

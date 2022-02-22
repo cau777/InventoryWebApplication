@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -69,5 +71,8 @@ namespace InventoryWebApplication.Utils.Formatting
 
             return str[..(max - 3)] + "...";
         }
+
+        public static string FormatShortDate(this DateTime date) =>
+            date.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern);
     }
 }

@@ -3,6 +3,7 @@
 @using InventoryWebApplication.Utils
 @using System.Globalization
 @using InventoryWebApplication.Models.Database
+@using InventoryWebApplication.Utils.Formatting
 @model InventoryWebApplication.Operations.FilterOperation
 
 @{
@@ -14,8 +15,8 @@
 }
 
 <h3>
-    Reports@(Model.Start != DateTime.MinValue ? " from " + Model.Start.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) : "")
-    @(Model.End != DateTime.MaxValue ? " up to " + Model.End.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) : "")
+    Reports@(Model.Start != DateTime.MinValue ? " from " + Model.Start.FormatShortDate() : "")
+    @(Model.End != DateTime.MaxValue ? " up to " + Model.End.FormatShortDate() : "")
 </h3>
 
 <div style="margin-bottom: 10px">
@@ -136,63 +137,67 @@
                         if (totalTime <= TimeSpan.FromDays(30))
                         {
                             
-                            @: data = google.visualization.arrayToDataTable([
-                            @Html.Raw(JsUtils.BuildChartData("Day", "Sales", "Profit", _salesService.GetDailySalesAndProfit(totalSalesStart, totalSalesEnd, sales), o => o.ToString("dd/MM"), o => o.ToString(CultureInfo.InvariantCulture), o => o.ToString(CultureInfo.InvariantCulture)))
-                            @: ]);
-                            @:finishColumnChart(dailySalesColumnChart, data,  'Daily sales (@totalSalesStart.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) - @totalSalesEnd.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern))');
+                            @: data = google.visualization.arrayToDataTable(
+                            @Html.Raw(JsUtils.BuildChartData("Day", "Sales", "Profit", 
+                                _salesService.GetDailySalesAndProfit(totalSalesStart, totalSalesEnd, sales)
+                                    .Select(o => new KeyValuePair<string, (double, double)>(o.Key.FormatShortDate(), o.Value))))
+                            @:);
+                            @:finishColumnChart(dailySalesColumnChart, data,  'Daily sales (@totalSalesStart.FormatShortDate() - @totalSalesEnd.FormatShortDate())');
 
                         }
                         else
                         {
-                            @: data = google.visualization.arrayToDataTable([
-                            @Html.Raw(JsUtils.BuildChartData("Month", "Sales", "Profit", _salesService.GetMonthlySalesAndProfit(totalSalesStart, totalSalesEnd, sales), o => o.ToString("MM/yy"), o => o.ToString(CultureInfo.InvariantCulture), o => o.ToString(CultureInfo.InvariantCulture)))
-                            @: ]);
-                            @:finishColumnChart(dailySalesColumnChart, data,  'Monthly sales (@totalSalesStart.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern) - @totalSalesEnd.ToString(DateTimeFormatInfo.InvariantInfo.ShortDatePattern))');                                                                                                                                                                                                                      
+                            @: data = google.visualization.arrayToDataTable(
+                            @Html.Raw(JsUtils.BuildChartData("Month", "Sales", "Profit", 
+                                _salesService.GetMonthlySalesAndProfit(totalSalesStart, totalSalesEnd, sales)
+                                    .Select(o => new KeyValuePair<string, (double, double)>(o.Key.FormatShortDate(), o.Value))))
+                            @:);
+                            @:finishColumnChart(dailySalesColumnChart, data,  'Monthly sales (@totalSalesStart.FormatShortDate() - @totalSalesEnd.FormatShortDate())');                                                                                                                                                                                                                      
                         }
                     }
                 },
                 
                 // Payment Methods
                 function() {
-                    let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales Count", _salesService.CountSalesPerProperty(sales, o => o.Method.Name), o => o, o => o.ToString()))
-                    ]);
+                    let data = google.visualization.arrayToDataTable(
+                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales Count", _salesService.CountSalesPerProperty(sales, o => o.Method.Name)))
+                    );
                     finishPieChart(paymentMethodsCountPieChart, data,  'Payment methods / Sales number');
                 },
                 
                 function() {
-                    let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales", _salesService.SumSalesPerProperty(sales, o => o.Method.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
-                    ]);
+                    let data = google.visualization.arrayToDataTable(
+                        @Html.Raw(JsUtils.BuildChartData("Method", "Sales", _salesService.SumSalesPerProperty(sales, o => o.Method.Name)))
+                    );
                     finishPieChart(paymentMethodsTotalPieChart, data,  'Payment methods / Sales');
                 },
                 
                 function() {
-                    let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Method", "Profit", _salesService.SumSalesProfitPerProperty(sales, o => o.Method.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
-                    ]);
+                    let data = google.visualization.arrayToDataTable(
+                        @Html.Raw(JsUtils.BuildChartData("Method", "Profit", _salesService.SumSalesProfitPerProperty(sales, o => o.Method.Name)))
+                    );
                     finishPieChart(paymentMethodsProfitPieChart, data,  'Payment methods / Profit');
                 },
                 
                 // Employees
                 function() {
-                    let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales Count", _salesService.CountSalesPerProperty(sales, o => o.Seller.Name), o => o, o => o.ToString()))
-                    ]);
+                    let data = google.visualization.arrayToDataTable(
+                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales Count", _salesService.CountSalesPerProperty(sales, o => o.Seller.Name)))
+                    );
                     finishPieChart(employeesCountPieChart, data,  'Employee / Sales number');
                 },
                 
                 function() {
-                    let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales", _salesService.SumSalesPerProperty(sales, o => o.Seller.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
-                    ]);
+                    let data = google.visualization.arrayToDataTable(
+                        @Html.Raw(JsUtils.BuildChartData("Employee", "Sales", _salesService.SumSalesPerProperty(sales, o => o.Seller.Name)))
+                    );
                     finishPieChart(employeesTotalPieChart, data,  'Employee / Sales');
                 },
                 
                 function() {
-                    let data = google.visualization.arrayToDataTable([
-                        @Html.Raw(JsUtils.BuildChartData("Employee", "Profit", _salesService.SumSalesProfitPerProperty(sales, o => o.Seller.Name), o => o, o => o.ToString(CultureInfo.InvariantCulture)))
-                    ]);
+                    let data = google.visualization.arrayToDataTable(
+                        @Html.Raw(JsUtils.BuildChartData("Employee", "Profit", _salesService.SumSalesProfitPerProperty(sales, o => o.Seller.Name)))
+                    );
                     finishPieChart(employeesProfitPieChart, data,  'Employee / Profit');
                 },
             ];

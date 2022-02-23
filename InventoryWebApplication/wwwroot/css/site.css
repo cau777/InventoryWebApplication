@@ -256,3 +256,13 @@ span.delete-list-item:hover {
     color: darkred;
     cursor: pointer;
 }
+
+.cur-pointer {
+    cursor: pointer;
+}
+
+.center-flex {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}

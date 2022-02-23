@@ -4,6 +4,7 @@ using InventoryWebApplication.Models;
 using InventoryWebApplication.Models.Database;
 using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services.Database;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +22,15 @@ namespace InventoryWebApplication.Controllers
 
         [HttpGet]
         [Authorize(Roles = Role.StockManagerAndAbove)]
-        public IActionResult ListProducts()
+        public async Task<IActionResult> ListProducts([FromQuery] [CanBeNull] string q = null)
         {
-            return View();
+            ProductsListOperation operation = new()
+            {
+                Query = q,
+                Products = await _productsService.SearchProducts(q),
+            };
+
+            return View(operation);
         }
 
         [HttpGet]

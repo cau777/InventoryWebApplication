@@ -1,8 +1,7 @@
 @using InventoryWebApplication.Utils.Formatting
 @using InventoryWebApplication.Models.Database
-@using InventoryWebApplication.Services.Database
 @using System.Globalization
-@inject DatabaseService<Product> _databaseService
+@model InventoryWebApplication.Operations.ProductsListOperation
 
 @{
     ViewBag.Title = "Products Management";
@@ -11,13 +10,27 @@
 }
 
 <h3>Products</h3>
+
+<div class="display-horizontal">
+    <input type="text" placeholder="Search" value="@(Model.Query)" id="searchBar"/>
+    <button class="btn-secondary btn-icon" type="button" data-toggle="modal" data-target="#searchModal"
+            id="searchButton" onclick="searchClick()">
+        <span uk-icon="icon: search; ratio: 1.1"></span>
+    </button>
+
+    <button class="btn-secondary btn-icon" type="button" data-toggle="modal" data-target="#searchModal"
+            id="clearButton" onclick="clearClick()">
+        <span uk-icon="icon: close; ratio: 1.1"></span>
+    </button>
+</div>
+
 <div class="btn-toolbar">
     <a asp-controller="Products" asp-action="AddProductForm">
         <button class="btn-secondary">Add</button>
     </a>
 </div>
 <div class="table-wrapper table-items-wrapper">
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="productsTable">
         <colgroup>
             <col span="1" style="width: 6%">
             <col span="1" style="width: 25%">
@@ -27,68 +40,166 @@
             <col span="1" style="width: 10%">
         </colgroup>
 
-        <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Desc</th>
-            <th>Quant.</th>
-            <th>Cost</th>
-            <th>Sell Price</th>
+        <tr id="tableHeaderRow">
+            <th>
+                <div class="center-flex">
+                    <span>Id</span>
+                    <span class="ml-auto cur-pointer" onclick="changeOrder(0)"></span>
+                </div>
+            </th>
+            <th>
+                <div class="center-flex">
+                    <span>Name</span>
+                    <span class="ml-auto cur-pointer" onclick="changeOrder(1)"></span>
+                </div>
+            </th>
+            <th>
+                <div class="center-flex">
+                    <span>Desc</span>
+                    <span class="ml-auto cur-pointer" onclick="changeOrder(2)"></span>
+                </div>
+            </th>
+            <th>
+                <div class="center-flex">
+                    <span>Quant.</span>
+                    <span class="ml-auto cur-pointer" onclick="changeOrder(3)"></span>
+                </div>
+            </th>
+            <th>
+                <div class="center-flex">
+                    <span>Cost</span>
+                    <span class="ml-auto cur-pointer" onclick="changeOrder(4)"></span>
+                </div>
+            </th>
+            <th>
+                <div class="center-flex">
+                    <span>Sell Price</span>
+                    <span class="ml-auto cur-pointer" onclick="changeOrder(5)"></span>
+                </div>
+            </th>
         </tr>
 
-        @foreach (Product product in _databaseService.GetAll())
-        {
-            <tr>
-                <td>
-                    <a class="normal-text-link" href="/products/edit/@product.Id">
-                        <div>
-                            @product.Id
-                        </div>
-                    </a>
-                </td>
-                <td>
-                    <a class="normal-text-link" href="/products/edit/@product.Id">
-                        <div>
-                            @product.Name
-                        </div>
-                    </a>
-                </td>
-                <td>
-                    <a class="normal-text-link" href="/products/edit/@product.Id">
-                        <div>
-                            @product.Description.CutAfter(40)
-                        </div>
-                    </a>
-                </td>
-                <td>
-                    <a class="normal-text-link" href="/products/edit/@product.Id">
-                        <div>
-                            @product.AvailableQuantity
-                        </div>
-                    </a>
-                </td>
-                <td>
-                    <a class="normal-text-link" href="/products/edit/@product.Id">
-                        <div>
-                            @product.Cost.ToString(CultureInfo.InvariantCulture)
-                        </div>
-                    </a>
-                </td>
-                <td>
-                    <a class="normal-text-link" href="/products/edit/@product.Id">
-                        <div>
-                            @product.SellPrice.ToString(CultureInfo.InvariantCulture)
-                        </div>
-                    </a>
-                </td>
-            </tr>
+        <tbody id="tableContent">
+                @foreach (Product product in Model.Products)
+                {
+                    <tr>
+                        <td>
+                            <a class="normal-text-link" href="/products/edit/@product.Id">
+                                <div>
+                                    @product.Id
+                                </div>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="normal-text-link" href="/products/edit/@product.Id">
+                                <div>
+                                    @product.Name
+                                </div>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="normal-text-link" href="/products/edit/@product.Id">
+                                <div>
+                                    @product.Description.CutAfter(40)
+                                </div>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="normal-text-link" href="/products/edit/@product.Id">
+                                <div>
+                                    @product.AvailableQuantity
+                                </div>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="normal-text-link" href="/products/edit/@product.Id">
+                                <div>
+                                    @product.Cost.ToString(CultureInfo.InvariantCulture)
+                                </div>
+                            </a>
+                        </td>
+                        <td>
+                            <a class="normal-text-link" href="/products/edit/@product.Id">
+                                <div>
+                                    @product.SellPrice.ToString(CultureInfo.InvariantCulture)
+                                </div>
+                            </a>
+                        </td>
+                    </tr>
         }
+        </tbody>
+
     </table>
 </div>
 
 @section Scripts
 {
     <script>
+        const searchBar = document.getElementById("searchBar");
+        const searchButton = document.getElementById("searchButton");
+        const clearButton = document.getElementById("clearButton");
+        const tableHeaderRow = document.getElementById("tableHeaderRow");
+        const tableHeaderOrderButtons = Array.from(tableHeaderRow.children).map(o => o.children[0].children[1]);
+        tableHeaderOrderButtons.forEach(o => defaultIcon(o));
+        const tableContent = document.getElementById("tableContent");
         
+        let currentOrder = 0;
+        let orderReversed = true;
+        changeOrder(0);
+        
+        function searchClick() {
+            let value = searchBar.value;
+            if (!value) return;
+            window.location.assign("/products?q=" + value);
+        }
+        
+        function clearClick() {
+            window.location.assign("/products");
+        }
+        
+        function changeOrder(num) {
+            if (num === currentOrder) {
+                orderReversed = !orderReversed;
+            } else {
+                defaultIcon(tableHeaderOrderButtons[currentOrder]);
+                currentOrder = num;
+            }
+            
+            let button = tableHeaderOrderButtons[num];
+            
+            button.setAttribute("uk-icon", "ratio: 0.7; icon: " + (orderReversed ? "chevron-down" : "chevron-up"));
+            button.style.opacity = "100%";
+            
+            let children = Array.from(tableContent.children);
+            
+            children.sort((a, b) => {
+                let result;
+                
+                let propA = a.children[num].children[0].children[0].innerText;
+                let propB = b.children[num].children[0].children[0].innerText;
+                
+                let numA = Number.parseFloat(propA);
+                if (isNaN(numA)){ 
+                    result = propA.localeCompare(propB);
+                } else {
+                    let numB = Number.parseFloat(propB);
+                    result = numA - numB;
+                }
+                
+                if (orderReversed) result *= -1;
+                console.log(propA + " " + propB + " " + result);
+                return result;
+            });
+            
+            for (let i = 0; i < children.length; i++) {
+                tableContent.removeChild(children[i]);
+                tableContent.appendChild(children[i]);
+            }
+        }
+        
+        function defaultIcon(element) {
+            element.setAttribute("uk-icon", "ratio: 0.7; icon: minus");
+            element.style.opacity = "50%";
+        }
     </script>
 }

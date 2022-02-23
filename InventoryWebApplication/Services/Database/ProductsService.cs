@@ -1,8 +1,10 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using InventoryWebApplication.DatabaseContexts;
 using InventoryWebApplication.Models.Database;
+using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace InventoryWebApplication.Services.Database
@@ -23,7 +25,7 @@ namespace InventoryWebApplication.Services.Database
         /// <param name="product">Product to be updated</param>
         /// <param name="shift">Number to add</param>
         /// <exception cref="ArgumentException">The result of the operation would be negative</exception>
-        public async Task ShiftProductQuantity([NotNull] Product product, int shift)
+        public async Task ShiftProductQuantity([System.Diagnostics.CodeAnalysis.NotNull] Product product, int shift)
         {
             if (product.AvailableQuantity + shift < 0) throw new ArgumentException("Negative quantity");
             product.AvailableQuantity += shift;
@@ -38,5 +40,16 @@ namespace InventoryWebApplication.Services.Database
             target.Cost = values.Cost;
             target.SellPrice = values.SellPrice;
         }
-    }
+
+        public async Task<Product[]> SearchProducts([CanBeNull] string query)
+        {
+            IQueryable<Product> source = ItemSet;
+            if (query is not null)
+            {
+                query = query.ToLower();
+                source = ItemSet.Where(o => o.Name.ToLower().Contains(query));
+            }
+            return await source.ToArrayAsync();
+        }
+    } 
 }

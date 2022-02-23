@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 using InventoryWebApplication.Models;
 using InventoryWebApplication.Operations;
 using InventoryWebApplication.Services.Importer;
-using JetBrains.Annotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Newtonsoft.Json;
 
 namespace InventoryWebApplication.Controllers
 {

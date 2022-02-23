@@ -4,7 +4,6 @@ using InventoryWebApplication.Models.Database;
 using InventoryWebApplication.Models.Interfaces;
 using InventoryWebApplication.Services.Database;
 using Microsoft.Extensions.DependencyInjection;
-using InventoryWebApplication.Services.Exporter;
 
 namespace InventoryWebApplication.Services.Importer
 {
